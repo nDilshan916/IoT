@@ -9,7 +9,7 @@ class eBil extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'E-Bill'
         ),
       ),

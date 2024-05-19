@@ -1,153 +1,140 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/components/bottom_bar.dart';
+import 'package:iot/components/reusable_card.dart';
+import 'package:iot/pages/subPages/KitchenPage.dart';
+import 'package:iot/pages/subPages/LivingRoomPage.dart';
+import 'package:iot/pages/subPages/Room_1_Page.dart';
 
-class SwitchPage extends StatelessWidget {
+class SwitchPage extends StatefulWidget {
   static const String id = 'SwitchPage';
-  const SwitchPage({super.key});
+
+  @override
+  State<SwitchPage> createState() => _SwitchPageState();
+}
+
+class _SwitchPageState extends State<SwitchPage> {
+  late bool isRoom1On = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSwitchStates();
+  }
+
+  void _loadSwitchStates() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isRoom1On = prefs.getBool('isFanOn') ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
-          'Switch Page',
-        ),
+        title: const Text('Switch Page'),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                'images/background.png'), // Replace with your image path
+            image: AssetImage('images/background.png'),
             fit: BoxFit.cover,
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'images/AC switch.png',
-                            // Adjust width and height if needed
-                            width: 100,
-                            height: 100,
-                          ),
-                          SizedBox(
-                              height: 8), // Add some space between image and text
-                          Text(
-                            'AC',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-
-                          Image.asset(
-                            'images/fan switch.png',
-                            // Adjust width and height if needed
-                            width: 100,
-                            height: 100,
-                          ),
-                          SizedBox(
-                              height: 8), // Add some space between image and text
-                          Text(
-                            'Fan',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'images/light switch.png',
-                    // Adjust width and height if needed
-                    width: 100,
-                    height: 100,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, LivingRoomPage.id);
+                          },
+                          child: SwitchCards(
+                            switchImage: 'images/living room switch.png',
+                            switchName: 'Living Room',
+                            isSwitchOn: false, // Assuming false for demo
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, Room_1_Page.id);
+                          },
+                          child: SwitchCards(
+                            switchImage: 'images/room switch.png',
+                            switchName: 'Room 1',
+                            isSwitchOn: isRoom1On,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8), // Add some space between image and text
-                  Text(
-                    'Light',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white70,
-                    ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: SwitchCards(
+                            switchImage: 'images/room switch.png',
+                            switchName: 'Room 2',
+                            isSwitchOn: false, // Assuming false for demo
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: SwitchCards(
+                            switchImage: 'images/room switch.png',
+                            switchName: 'Room 3',
+                            isSwitchOn: false, // Assuming false for demo
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: SwitchCards(
+                            switchImage: 'images/room switch.png',
+                            switchName: 'Room 4',
+                            isSwitchOn: false, // Assuming false for demo
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, KitchenPage.id);
+                          },
+                          child: SwitchCards(
+                            switchImage: 'images/kitchen button.png',
+                            switchName: 'Kitchen',
+                            isSwitchOn: false, // Assuming false for demo
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'images/living room switch.png',
-                          // Adjust width and height if needed
-                          width: 100,
-                          height: 100,
-                        ),
-                        SizedBox(height: 8), // Add some space between image and text
-                        Text(
-                          'Living Room',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'images/room switch.png',
-                          // Adjust width and height if needed
-                          width: 100,
-                          height: 100,
-                        ),
-                        SizedBox(height: 8), // Add some space between image and text
-                        Text(
-                          'Room',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),),
-                ],
-              ),
-            ),
-            bottomBar(currentPageId: id),
+            const bottomBar(currentPageId: SwitchPage.id),
           ],
         ),
       ),

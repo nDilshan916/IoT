@@ -60,13 +60,13 @@ import 'package:iot/pages/switchPage.dart';
 class bottomBar extends StatelessWidget {
   final String currentPageId;
 
-  bottomBar({required this.currentPageId});
+  const bottomBar({super.key, required this.currentPageId});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 46.0,
-      color: Color(0xFF0A0E21),
+      color: const Color(0xFF0A0E21),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

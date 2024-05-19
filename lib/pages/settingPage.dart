@@ -4,12 +4,14 @@ import 'package:iot/components//bottom_bar.dart';
 class SettingPage extends StatelessWidget {
   static const String id = "settingPage";
 
+  const SettingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Settings',
         ),
       ),
@@ -17,9 +19,9 @@ class SettingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            child: Text('user settings'),
+            child: const Text('user settings'),
           ),
-          bottomBar(currentPageId: id),
+          const bottomBar(currentPageId: id),
         ],
       ),
     );

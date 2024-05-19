@@ -5,7 +5,7 @@ class WifiController {
     // You would replace this with actual Wi-Fi communication logic
     print('Sending command to toggle device with ID: $deviceId');
     // Simulate delay for network communication (replace with real network call)
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     print('Device toggled successfully');
   }
 

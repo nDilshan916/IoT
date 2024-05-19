@@ -1,19 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:iot/pages/eBilPage.dart';
 import 'package:iot/components/bottom_bar.dart';
 
 class PowerUsagePage extends StatelessWidget {
   static const String id = 'PowerUsagePage';
 
+  const PowerUsagePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Power Usage',
         ),
       ),
@@ -24,20 +24,20 @@ class PowerUsagePage extends StatelessWidget {
           // Placeholder for power usage chart
           Container(
             height: 300,
-            padding: EdgeInsets.all(16.0),
-            child: PowerUsageChart(), // Custom chart widget
+            padding: const EdgeInsets.all(16.0),
+            child: const PowerUsageChart(), // Custom chart widget
           ),
           // Daily power usage
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
               'Daily Power Usage: 150 kWh', // Replace with actual calculation
               style: TextStyle(fontSize: 16.0),
             ),
           ),
           // Monthly power usage
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
               'Monthly Power Usage: 4500 kWh', // Replace with actual calculation
               style: TextStyle(fontSize: 16.0),
@@ -48,10 +48,10 @@ class PowerUsagePage extends StatelessWidget {
               onPressed: (){
                 Navigator.pushNamed(context, eBil.id);
               },
-              style: ButtonStyle(
+              style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(Colors.blueAccent),
               ),
-              child: Text(
+              child: const Text(
                 'Get E-bil',
                 style: TextStyle(
                     fontSize: 15.0
@@ -59,7 +59,7 @@ class PowerUsagePage extends StatelessWidget {
               ),
             ),
           ),
-          bottomBar(currentPageId: id),
+          const bottomBar(currentPageId: id),
         ],
       ),
     );
@@ -68,6 +68,8 @@ class PowerUsagePage extends StatelessWidget {
 
 // Custom chart components to display power usage data
 class PowerUsageChart extends StatelessWidget {
+  const PowerUsageChart({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Sample data for demonstration
@@ -83,7 +85,7 @@ class PowerUsageChart extends StatelessWidget {
     ];
 
     return SfCartesianChart(
-      primaryXAxis: DateTimeAxis(),
+      primaryXAxis: const DateTimeAxis(),
       series: <LineSeries<PowerUsageData, DateTime>>[
         LineSeries<PowerUsageData, DateTime>(
           dataSource: data,
