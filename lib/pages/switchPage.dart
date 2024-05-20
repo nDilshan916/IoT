@@ -68,7 +68,9 @@ class _SwitchPageState extends State<SwitchPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, Room_1_Page.id);
+                            Navigator.pushNamed(context, Room_1_Page.id).then((_) {
+                              _loadSwitchStates(); // Reload switch states when coming back
+                            });
                           },
                           child: SwitchCards(
                             switchImage: 'images/room switch.png',

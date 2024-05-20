@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Room_1_Page extends StatefulWidget {
   static const String id = 'Room1Page';
@@ -13,17 +12,14 @@ class Room_1_Page extends StatefulWidget {
 
 class _Room_1_PageState extends State<Room_1_Page> {
   late bool isFanOn = false;
-
-  // Initialize SharedPreferences instance
   late SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
-    _loadSwitchState(); // Load switch state when the widget is initialized
+    _loadSwitchState();
   }
 
-  // Load switch state from SharedPreferences
   void _loadSwitchState() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -31,9 +27,8 @@ class _Room_1_PageState extends State<Room_1_Page> {
     });
   }
 
-  // Save switch state to SharedPreferences
   void _saveSwitchState(bool value) async {
-    _prefs.setBool('isFanOn', value);
+    await _prefs.setBool('isFanOn', value);
   }
 
   @override
@@ -57,42 +52,29 @@ class _Room_1_PageState extends State<Room_1_Page> {
                         switchName: 'Fan',
                         isSwitchOn: isFanOn,
                       ),
-                      switchButton(),
+                      Positioned(
+                        bottom: 1,
+                        right: 20,
+                        child: Switch(
+                          value: isFanOn,
+                          onChanged: (value) {
+                            setState(() {
+                              isFanOn = value;
+                              _saveSwitchState(isFanOn);
+                            });
+                          },
+                          activeTrackColor: Colors.white70,
+                          activeColor: Colors.green,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-          bottomBar(currentPageId: Room_1_Page.id,),
+          bottomBar(currentPageId: Room_1_Page.id),
         ],
-      ),
-    );
-  }
-
-  // Switch button widget
-  Positioned switchButton() {
-    return Positioned(
-      bottom: 1,
-      right: 20,
-      child: IconButton(
-        onPressed: () {
-          setState(() {
-            isFanOn = !isFanOn; // Toggle switch state
-            _saveSwitchState(isFanOn); // Save switch state
-          });
-        },
-        icon: Switch(
-          value: isFanOn,
-          onChanged: (value) {
-            setState(() {
-              isFanOn = value;
-              _saveSwitchState(isFanOn); // Save switch state
-            });
-          },
-          activeTrackColor: Colors.white70,
-          activeColor: Colors.green,
-        ),
       ),
     );
   }
