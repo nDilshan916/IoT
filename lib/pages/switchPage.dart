@@ -9,6 +9,8 @@ import 'package:iot/pages/subPages/Room_1_Page.dart';
 class SwitchPage extends StatefulWidget {
   static const String id = 'SwitchPage';
 
+  const SwitchPage({super.key});
+
   @override
   State<SwitchPage> createState() => _SwitchPageState();
 }
@@ -58,7 +60,7 @@ class _SwitchPageState extends State<SwitchPage> {
                           onTap: () {
                             Navigator.pushNamed(context, LivingRoomPage.id);
                           },
-                          child: SwitchCards(
+                          child: const SwitchCards(
                             switchImage: 'images/living room switch.png',
                             switchName: 'Living Room',
                             isSwitchOn: false, // Assuming false for demo
@@ -87,7 +89,7 @@ class _SwitchPageState extends State<SwitchPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {},
-                          child: SwitchCards(
+                          child: const SwitchCards(
                             switchImage: 'images/room switch.png',
                             switchName: 'Room 2',
                             isSwitchOn: false, // Assuming false for demo
@@ -97,7 +99,7 @@ class _SwitchPageState extends State<SwitchPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {},
-                          child: SwitchCards(
+                          child: const SwitchCards(
                             switchImage: 'images/room switch.png',
                             switchName: 'Room 3',
                             isSwitchOn: false, // Assuming false for demo
@@ -112,7 +114,7 @@ class _SwitchPageState extends State<SwitchPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {},
-                          child: SwitchCards(
+                          child: const SwitchCards(
                             switchImage: 'images/room switch.png',
                             switchName: 'Room 4',
                             isSwitchOn: false, // Assuming false for demo
@@ -124,7 +126,7 @@ class _SwitchPageState extends State<SwitchPage> {
                           onTap: () {
                             Navigator.pushNamed(context, KitchenPage.id);
                           },
-                          child: SwitchCards(
+                          child: const SwitchCards(
                             switchImage: 'images/kitchen button.png',
                             switchName: 'Kitchen',
                             isSwitchOn: false, // Assuming false for demo

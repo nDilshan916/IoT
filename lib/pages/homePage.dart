@@ -6,6 +6,7 @@ class HomePage extends StatelessWidget {
   static const String id = 'homePage';
 
   const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Replace these with actual usage data and user-set limit

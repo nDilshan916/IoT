@@ -36,13 +36,13 @@ class IoTApp extends StatelessWidget {
       initialRoute: HomePage.id,
       routes: {
         HomePage.id: (context) => const HomePage(),
-        SwitchPage.id: (context) => SwitchPage(),
-        PowerUsagePage.id: (context) =>  PowerUsagePage(),
+        SwitchPage.id: (context) => const SwitchPage(),
+        PowerUsagePage.id: (context) =>  const PowerUsagePage(),
         SettingPage.id: (context) => const SettingPage(),
         eBil.id: (context) => const eBil(),
-        LivingRoomPage.id: (context) => LivingRoomPage(),
-        Room_1_Page.id: (context) => Room_1_Page(),
-        KitchenPage.id: (context) => KitchenPage(),
+        LivingRoomPage.id: (context) => const LivingRoomPage(),
+        Room_1_Page.id: (context) => const Room_1_Page(),
+        KitchenPage.id: (context) => const KitchenPage(),
       },
     );
   }

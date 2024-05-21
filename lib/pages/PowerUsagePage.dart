@@ -1,106 +1,84 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:iot/pages/eBilPage.dart';
 import 'package:iot/components/bottom_bar.dart';
 
-class PowerUsagePage extends StatelessWidget {
+import '../components/charts.dart';
+
+class PowerUsagePage extends StatefulWidget {
   static const String id = 'PowerUsagePage';
 
   const PowerUsagePage({super.key});
+
+  @override
+  _PowerUsagePageState createState() => _PowerUsagePageState();
+}
+
+class _PowerUsagePageState extends State<PowerUsagePage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Power Usage',
-        ),
+        title: const Text('Power Usage'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Placeholder for power usage chart
-          Container(
-            height: 300,
-            padding: const EdgeInsets.all(16.0),
-            child: const PowerUsageChart(), // Custom chart widget
+          TabBar(
+            controller: _tabController,
+            labelColor: Colors.blue,
+            unselectedLabelColor: Colors.black,
+            tabs: const [
+              Tab(text: 'D'),
+              Tab(text: 'W'),
+              Tab(text: 'M'),
+              Tab(text: 'Y'),
+            ],
           ),
-          // Daily power usage
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Daily Power Usage: 150 kWh', // Replace with actual calculation
-              style: TextStyle(fontSize: 16.0),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                PowerUsageView(viewType: 'Daily'),
+                PowerUsageView(viewType: 'Weekly'),
+                PowerUsageView(viewType: 'Monthly'),
+                PowerUsageView(viewType: 'Yearly'),
+              ],
             ),
           ),
-          // Monthly power usage
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Monthly Power Usage: 4500 kWh', // Replace with actual calculation
-              style: TextStyle(fontSize: 16.0),
+          const SizedBox(height: 20.0),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, eBil.id);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueAccent,
+            ),
+            child: const Text(
+              'Get E-bill',
+              style: TextStyle(fontSize: 15.0),
             ),
           ),
-          Container(
-            child: ElevatedButton(
-              onPressed: (){
-                Navigator.pushNamed(context, eBil.id);
-              },
-              style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.blueAccent),
-              ),
-              child: const Text(
-                'Get E-bil',
-                style: TextStyle(
-                    fontSize: 15.0
-                ),
-              ),
-            ),
-          ),
-          const bottomBar(currentPageId: id),
+          const bottomBar(currentPageId: PowerUsagePage.id),
         ],
       ),
     );
   }
 }
 
-// Custom chart components to display power usage data
-class PowerUsageChart extends StatelessWidget {
-  const PowerUsageChart({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Sample data for demonstration
-    final List<PowerUsageData> data = [
-      PowerUsageData(DateTime(2024, 4, 20), 100),
-      PowerUsageData(DateTime(2024, 4, 21), 150),
-      PowerUsageData(DateTime(2024, 4, 22), 120),
-      PowerUsageData(DateTime(2024, 4, 23), 130),
-      PowerUsageData(DateTime(2024, 4, 24), 135),
-      PowerUsageData(DateTime(2024, 4, 25), 130),
-      PowerUsageData(DateTime(2024, 4, 26), 140),
-      PowerUsageData(DateTime(2024, 5, 25), 160),
-    ];
-
-    return SfCartesianChart(
-      primaryXAxis: const DateTimeAxis(),
-      series: <LineSeries<PowerUsageData, DateTime>>[
-        LineSeries<PowerUsageData, DateTime>(
-          dataSource: data,
-          xValueMapper: (PowerUsageData data, _) => data.date,
-          yValueMapper: (PowerUsageData data, _) => data.usage,
-        ),
-      ],
-    );
-  }
-}
-
-// Data model for power usage
-class PowerUsageData {
-  final DateTime date;
-  final int usage;
-
-  PowerUsageData(this.date, this.usage);
-}

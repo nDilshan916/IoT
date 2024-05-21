@@ -4,14 +4,16 @@ import 'package:iot/components/bottom_bar.dart';
 class KitchenPage extends StatelessWidget {
   static const String id = 'KitchenPage';
 
+  const KitchenPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Text('Kitchen'),
+        title: const Text('Kitchen'),
       ),
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Center(

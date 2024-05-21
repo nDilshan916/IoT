@@ -6,11 +6,11 @@ class SwitchCards extends StatelessWidget {
   final bool isSwitchOn;
 
   const SwitchCards({
-    Key? key,
+    super.key,
     required this.switchImage,
     required this.switchName,
     required this.isSwitchOn,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

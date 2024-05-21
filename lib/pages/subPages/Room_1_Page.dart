@@ -6,6 +6,8 @@ import 'package:iot/components/reusable_card.dart';
 class Room_1_Page extends StatefulWidget {
   static const String id = 'Room1Page';
 
+  const Room_1_Page({super.key});
+
   @override
   State<Room_1_Page> createState() => _Room_1_PageState();
 }
@@ -36,7 +38,7 @@ class _Room_1_PageState extends State<Room_1_Page> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Text('Room 1'),
+        title: const Text('Room 1'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +75,7 @@ class _Room_1_PageState extends State<Room_1_Page> {
               ),
             ),
           ),
-          bottomBar(currentPageId: Room_1_Page.id),
+          const bottomBar(currentPageId: Room_1_Page.id),
         ],
       ),
     );

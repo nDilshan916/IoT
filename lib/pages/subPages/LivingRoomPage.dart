@@ -4,14 +4,16 @@ import 'package:iot/components/bottom_bar.dart';
 class LivingRoomPage extends StatelessWidget {
   static const String id = 'LivingRoomPage';
 
+  const LivingRoomPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Text('Living Room'),
+        title: const Text('Living Room'),
       ),
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Center(
