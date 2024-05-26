@@ -1,136 +1,293 @@
 import 'package:flutter/material.dart';
 import 'package:iot/pages/logIn/logInPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
-class SignUpPage extends StatelessWidget {
+import '../homePage.dart';
+
+class SignUpPage extends StatefulWidget {
   static const String id = 'SignUpPage';
-  const SignUpPage({super.key});
+  const SignUpPage({Key? key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _auth = FirebaseAuth.instance;
+   String username = '';
+   String email = '';
+   String password = '';
+  late String confirmPassword;
+  bool isPasswordVisible = false;
+  bool isConfirmPasswordVisible = false;
+  bool isEmailVerified = false;
+
+  // Specific email to verify against
+  static const String specificEmail = 'example@example.com';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(//thanks for watching
-          children: [
-            Container(
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color(0xffB81736),
+                Color(0xff281537),
+              ]),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.only(top: 60.0, left: 22),
+              child: Text(
+                'Create Your\nAccount',
+                style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 200.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40)),
+                color: Colors.white,
+              ),
               height: double.infinity,
               width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Color(0xffB81736),
-                  Color(0xff281537),
-                ]),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.only(top: 60.0, left: 22),
-                child: Text(
-                  'Create Your\nAccount',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 200.0),
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-                  color: Colors.white,
-                ),
-                height: double.infinity,
-                width: double.infinity,
-                child:  Padding(
-                  padding: const EdgeInsets.only(left: 18.0,right: 18),
-                  child: ListView(
-                    children: [
-                      const TextField(
-                        decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.check,color: Colors.grey,),
-                            label: Text('Full Name',style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:Color(0xffB81736),
-                            ),)
-                        ),
-                      ),
-                      const TextField(
-                        decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.check,color: Colors.grey,),
-                            label: Text('Phone or Gmail',style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:Color(0xffB81736),
-                            ),)
-                        ),
-                      ),
-                      const TextField(
-                        decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.visibility_off,color: Colors.grey,),
-                            label: Text('Password',style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:Color(0xffB81736),
-                            ),)
-                        ),
-                      ),
-                      const TextField(
-                        decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.visibility_off,color: Colors.grey,),
-                            label: Text('Conform Password',style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color:Color(0xffB81736),
-                            ),)
-                        ),
-                      ),
-
-                      const SizedBox(height: 10,),
-                      const SizedBox(height: 70,),
-                      Container(
-                        height: 55,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: const LinearGradient(
-                              colors: [
-                                Color(0xffB81736),
-                                Color(0xff281537),
-                              ]
+              child: Padding(
+                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                child: ListView(
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          username = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        label: Text(
+                          'User Name',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffB81736),
                           ),
                         ),
-                        child: const Center(child: Text('SIGN IN',style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white
-                        ),),),
                       ),
-                      const SizedBox(height: 20.0,),
-                       Align(
-                        alignment: Alignment.bottomRight,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Text("Already have account?",style: TextStyle(
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          email = value;
+                          isEmailVerified = (email == specificEmail);
+                        });
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(
+                          isEmailVerified ? Icons.check : Icons.check_circle_outline,
+                          color: isEmailVerified ? Colors.green : Colors.grey,
+                        ),
+                        label: Text(
+                          'Gmail',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffB81736),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TextField(
+                      obscureText: !isPasswordVisible,
+                      onChanged: (value) {
+                        setState(() {
+                          password = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isPasswordVisible = !isPasswordVisible;
+                            });
+                          },
+                          child: Icon(
+                            isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        label: Text(
+                          'Password',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffB81736),
+                          ),
+                        ),
+                      ),
+                    ),
+                    TextField(
+                      obscureText: !isConfirmPasswordVisible,
+                      onChanged: (value) {
+                        setState(() {
+                          confirmPassword = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                            });
+                          },
+                          child: Icon(
+                            isConfirmPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        label: Text(
+                          'Confirm Password',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffB81736),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const SizedBox(
+                      height: 70,
+                    ),
+                    signUpButton(
+                      username: username,
+                      email: email,
+                      password: password,
+                      onTap: () async{
+                        if((email == specificEmail) && (password == confirmPassword)) {
+                          try{
+                            final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                            if(newUser != null){
+                              Navigator.pushNamed(context, HomePage.id);
+                            }
+                          }
+                          catch(e){
+                            print(e);
+                          }
+
+
+                        }
+                        else{
+                          Alert(
+                            context: context,
+                            type: AlertType.error,
+                            title: "ALERT",
+                            desc: "Check the email and password again!",
+                            buttons: [
+                              DialogButton(
+                                child: Text(
+                                  "Close",
+                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                width: 120,
+                              )
+                            ],
+                          ).show();
+
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            "Already have account?",
+                            style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey
-                            ),),
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.pushNamed(context, LogInPage.id);
-                              },
-                              child: const Text("Log In",style: TextStyle(///done login page
+                                color: Colors.grey),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, LogInPage.id);
+                            },
+                            child: const Text(
+                              "Log In",
+                              style: TextStyle(
+                                ///done login page
                                   fontWeight: FontWeight.bold,
                                   fontSize: 17,
-                                  color: Colors.black
-                              ),),
+                                  color: Colors.black),
                             ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class signUpButton extends StatelessWidget {
+  const signUpButton({
+    super.key,
+    required this.username,
+    required this.email,
+    required this.password,
+    required this.onTap,
+  });
+
+  final String username;
+  final String email;
+  final String password;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 55,
+        width: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient: const LinearGradient(colors: [
+            Color(0xffB81736),
+            Color(0xff281537),
+          ]),
+        ),
+        child: const Center(
+          child: Text(
+            'SIGN UP',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "127623039843",
+    "project_id": "iot-firebase-c9601",
+    "storage_bucket": "iot-firebase-c9601.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127623039843:android:1e053796d4a6f5a6252156",
+        "android_client_info": {
+          "package_name": "com.example.iot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIZEMWptVG90sNPPF9gYH-j988sC8Zpko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

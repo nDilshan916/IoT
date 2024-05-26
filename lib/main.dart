@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iot/pages/PowerUsagePage.dart';
 import 'package:iot/pages/homePage.dart';
@@ -14,7 +15,9 @@ import 'pages/eBilPage.dart';
 import 'package:iot/pages/subPages/LivingRoomPage.dart';
 // Import the wifi_controller.dart file
 
-void main() {
+Future main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const IoTApp());
 }
 
@@ -43,7 +46,7 @@ class IoTApp extends StatelessWidget {
         InitialPage.id: (context) => const InitialPage(),
         SignUpPage.id: (context) => const SignUpPage(),
         LogInPage.id: (context) => const LogInPage(),
-        HomePage.id: (context) => const HomePage(),
+        HomePage.id: (context) =>  HomePage(),
         SwitchPage.id: (context) => const SwitchPage(),
         PowerUsagePage.id: (context) =>  const PowerUsagePage(),
         SettingPage.id: (context) =>  const SettingPage(),
