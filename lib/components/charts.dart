@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class PowerUsagePage extends StatefulWidget {
   static const String id = 'PowerUsagePage';
 
-  const PowerUsagePage({Key? key}) : super(key: key);
+  const PowerUsagePage({super.key});
 
   @override
   _PowerUsagePageState createState() => _PowerUsagePageState();
@@ -52,7 +52,7 @@ class _PowerUsagePageState extends State<PowerUsagePage>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
+              children: const [
                 PowerUsageView(viewType: 'Daily'),
                 PowerUsageView(viewType: 'Weekly'),
                 PowerUsageView(viewType: 'Monthly'),
@@ -69,7 +69,7 @@ class _PowerUsagePageState extends State<PowerUsagePage>
 class PowerUsageView extends StatelessWidget {
   final String viewType;
 
-  const PowerUsageView({required this.viewType, Key? key}) : super(key: key);
+  const PowerUsageView({required this.viewType, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +211,7 @@ class PowerUsageView extends StatelessWidget {
           dateFormat: DateFormat.yMMM(),
         );
       default:
-        return DateTimeAxis();
+        return const DateTimeAxis();
     }
   }
 
@@ -225,28 +225,28 @@ class PowerUsageView extends StatelessWidget {
 
   List<PowerUsageData> _aggregateDataByWeek(List<PowerUsageData> data) {
     final Map<int, int> weeklyUsage = {};
-    data.forEach((datum) {
+    for (var datum in data) {
       final weekOfYear = datum.date.weekOfYear;
       weeklyUsage[weekOfYear] = (weeklyUsage[weekOfYear] ?? 0) + datum.usage;
-    });
+    }
     return weeklyUsage.entries.map((entry) => PowerUsageData(DateTime(2024).add(Duration(days: entry.key * 7)), entry.value)).toList();
   }
 
   List<PowerUsageData> _aggregateDataByMonth(List<PowerUsageData> data) {
     final Map<int, int> monthlyUsage = {};
-    data.forEach((datum) {
+    for (var datum in data) {
       final monthOfYear = datum.date.month;
       monthlyUsage[monthOfYear] = (monthlyUsage[monthOfYear] ?? 0) + datum.usage;
-    });
+    }
     return monthlyUsage.entries.map((entry) => PowerUsageData(DateTime(2024, entry.key), entry.value)).toList();
   }
 
   List<PowerUsageData> _aggregateDataByYear(List<PowerUsageData> data) {
     final Map<int, int> yearlyUsage = {};
-    data.forEach((datum) {
+    for (var datum in data) {
       final year = datum.date.year;
       yearlyUsage[year] = (yearlyUsage[year] ?? 0) + datum.usage;
-    });
+    }
     return yearlyUsage.entries.map((entry) => PowerUsageData(DateTime(entry.key), entry.value)).toList();
   }
 }

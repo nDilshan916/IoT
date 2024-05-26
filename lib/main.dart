@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iot/pages/PowerUsagePage.dart';
 import 'package:iot/pages/homePage.dart';
+import 'package:iot/pages/logIn/initialPage.dart';
+import 'package:iot/pages/logIn/logInPage.dart';
+import 'package:iot/pages/logIn/signUpPage.dart';
+import 'package:iot/pages/settingPages/BillCircle.dart';
+import 'package:iot/pages/settingPages/TecSupport.dart';
 import 'package:iot/pages/subPages/KitchenPage.dart';
 import 'package:iot/pages/subPages/Room_1_Page.dart';
 import 'package:iot/pages/switchPage.dart';
@@ -33,16 +38,21 @@ class IoTApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         // colorScheme: ColorScheme.dark(background: Colors.white12)
       ),
-      initialRoute: HomePage.id,
+      initialRoute: InitialPage.id,
       routes: {
+        InitialPage.id: (context) => const InitialPage(),
+        SignUpPage.id: (context) => const SignUpPage(),
+        LogInPage.id: (context) => const LogInPage(),
         HomePage.id: (context) => const HomePage(),
         SwitchPage.id: (context) => const SwitchPage(),
         PowerUsagePage.id: (context) =>  const PowerUsagePage(),
-        SettingPage.id: (context) => const SettingPage(),
+        SettingPage.id: (context) =>  const SettingPage(),
         eBil.id: (context) => const eBil(),
         LivingRoomPage.id: (context) => const LivingRoomPage(),
         Room_1_Page.id: (context) => const Room_1_Page(),
         KitchenPage.id: (context) => const KitchenPage(),
+        TecSupport.id: (context) => const TecSupport(),
+        BillCircle.id: (context) =>  const BillCircle(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot/components/bottom_bar.dart';
 
 class eBil extends StatelessWidget {
   static const String id = 'eBil';
@@ -8,12 +9,20 @@ class eBil extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: const Text(
           'E-Bill'
         ),
       ),
-      body: Container(),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(),
+            const bottomBar(currentPageId: id),
+          ],
+        ),
+      ),
     );
   }
 }
