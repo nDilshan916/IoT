@@ -1,14 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iot/components//bottom_bar.dart';
-import 'package:iot/components/icon_content.dart';
-import 'package:iot/components/reusable_card.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iot/components/daily_usage_progress.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   static const String id = 'homePage';
+
+  const HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _auth = FirebaseAuth.instance;
+  late User loggedInUser;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getCurrentUser();
+  }
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     // Replace these with actual usage data and user-set limit
@@ -18,12 +43,12 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'IoT Dashboard',
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
                 'images/background.png'), // Replace with your image path
@@ -34,7 +59,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             // Daily Usage Progress Bar
-            Container(
+            SizedBox(
               height: 400.0,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -46,14 +71,14 @@ class HomePage extends StatelessWidget {
             ),
             Card(
               color: Colors.red,
-              child: Container(
+              child: SizedBox(
                 width: 300.0,
                 height: 60.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.asset('images/kilowot_h_display.png'),
-                    Column(
+                    const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
@@ -75,14 +100,14 @@ class HomePage extends StatelessWidget {
 
             Card(
               color: Colors.red,
-              child: Container(
+              child: SizedBox(
                 width: 300.0,
                 height: 60.0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Image.asset('images/money_display.png'),
-                    Column(
+                    const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
@@ -102,7 +127,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            bottomBar(currentPageId: id),
+            const bottomBar(currentPageId: HomePage.id),
           ],
         ),
       ),
