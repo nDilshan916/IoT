@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iot/pages/homePage.dart';
-import 'package:iot/pages/logIn/logInPage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
+
+import 'logInPage.dart';
 
 
 class InitialPage extends StatelessWidget {
@@ -76,7 +77,7 @@ class InitialPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, HomePage.id);
+                    Navigator.pushNamed(context, LogInPage.id);
                   },
                   child: const Text('Log In',
                     style: TextStyle(

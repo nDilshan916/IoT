@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:iot/pages/logIn/logInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../homePage.dart';
+import 'logInPage.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String id = 'SignUpPage';
-  const SignUpPage({Key? key});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -15,16 +16,20 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _auth = FirebaseAuth.instance;
-   String username = '';
-   String email = '';
-   String password = '';
+  String username = '';
+  String email = '';
+  String password = '';
   late String confirmPassword;
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
   bool isEmailVerified = false;
 
-  // Specific email to verify against
   static const String specificEmail = 'example@example.com';
+
+  Future<void> _saveUserName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('userName', name);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           username = value;
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         label: Text(
                           'User Name',
                           style: TextStyle(
@@ -91,10 +96,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       decoration: InputDecoration(
                         suffixIcon: Icon(
-                          isEmailVerified ? Icons.check : Icons.check_circle_outline,
+                          isEmailVerified
+                              ? Icons.check
+                              : Icons.check_circle_outline,
                           color: isEmailVerified ? Colors.green : Colors.grey,
                         ),
-                        label: Text(
+                        label: const Text(
                           'Gmail',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -124,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             color: Colors.grey,
                           ),
                         ),
-                        label: Text(
+                        label: const Text(
                           'Password',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -144,7 +151,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
-                              isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                              isConfirmPasswordVisible =
+                              !isConfirmPasswordVisible;
                             });
                           },
                           child: Icon(
@@ -154,7 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             color: Colors.grey,
                           ),
                         ),
-                        label: Text(
+                        label: const Text(
                           'Confirm Password',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -173,21 +181,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       username: username,
                       email: email,
                       password: password,
-                      onTap: () async{
-                        if((email == specificEmail) && (password == confirmPassword)) {
-                          try{
-                            final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                            if(newUser != null){
-                              Navigator.pushNamed(context, HomePage.id);
-                            }
-                          }
-                          catch(e){
+                      onTap: () async {
+                        if ((email == specificEmail) &&
+                            (password == confirmPassword)) {
+                          try {
+                            final newUser =
+                            await _auth.createUserWithEmailAndPassword(
+                                email: email, password: password);
+                            await _saveUserName(username); // Save username
+                            Navigator.pushNamed(context, HomePage.id);
+                          } catch (e) {
                             print(e);
                           }
-
-
-                        }
-                        else{
+                        } else {
                           Alert(
                             context: context,
                             type: AlertType.error,
@@ -195,16 +201,16 @@ class _SignUpPageState extends State<SignUpPage> {
                             desc: "Check the email and password again!",
                             buttons: [
                               DialogButton(
-                                child: Text(
-                                  "Close",
-                                  style: TextStyle(color: Colors.white, fontSize: 20),
-                                ),
                                 onPressed: () => Navigator.pop(context),
                                 width: 120,
+                                child: const Text(
+                                  "Close",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
                               )
                             ],
                           ).show();
-
                         }
                       },
                     ),
@@ -230,7 +236,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: const Text(
                               "Log In",
                               style: TextStyle(
-                                ///done login page
                                   fontWeight: FontWeight.bold,
                                   fontSize: 17,
                                   color: Colors.black),
@@ -282,9 +287,7 @@ class signUpButton extends StatelessWidget {
           child: Text(
             'SIGN UP',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.white),
+                fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
           ),
         ),
       ),

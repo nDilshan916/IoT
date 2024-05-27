@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
-import 'package:iot/pages/logIn/initialPage.dart';
-import 'package:iot/pages/settingPages/TecSupport.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:iot/components//bottom_bar.dart';
+import 'package:iot/pages/logIn/initialPage.dart';
+import 'package:iot/pages/settingPages/tecSupport.dart';
+import 'package:iot/components/bottom_bar.dart';
 
 class SettingPage extends StatefulWidget {
   static const String id = "settingPage";
@@ -73,51 +72,51 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: isEditing
                     ? Row(
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            child: TextField(
-                              controller: _controller,
-                              style: const TextStyle(fontSize: 30.0),
-                              onSubmitted: (value) {
-                                setState(() {
-                                  userName = value;
-                                  isEditing = false;
-                                });
-                                _saveUserName(value);
-                              },
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.check),
-                            onPressed: () {
-                              setState(() {
-                                userName = _controller.text;
-                                isEditing = false;
-                              });
-                              _saveUserName(_controller.text);
-                            },
-                          ),
-                        ],
-                      )
-                    : Row(
-                        children: [
-                          Text(
-                            userName,
-                            style: const TextStyle(fontSize: 30.0),
-                          ),
-                          const SizedBox(width: 30.0),
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              setState(() {
-                                isEditing = true;
-                                _controller.text = userName;
-                              });
-                            },
-                          ),
-                        ],
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: TextField(
+                        controller: _controller,
+                        style: const TextStyle(fontSize: 30.0),
+                        onSubmitted: (value) {
+                          setState(() {
+                            userName = value;
+                            isEditing = false;
+                          });
+                          _saveUserName(value);
+                        },
                       ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.check),
+                      onPressed: () {
+                        setState(() {
+                          userName = _controller.text;
+                          isEditing = false;
+                        });
+                        _saveUserName(_controller.text);
+                      },
+                    ),
+                  ],
+                )
+                    : Row(
+                  children: [
+                    Text(
+                      userName,
+                      style: const TextStyle(fontSize: 30.0),
+                    ),
+                    const SizedBox(width: 30.0),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        setState(() {
+                          isEditing = true;
+                          _controller.text = userName;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -137,48 +136,41 @@ class _SettingPageState extends State<SettingPage> {
                   const SizedBox(height: 30.0),
                   const NewCard(text: 'Set Limit'),
                   const NewCard(text: 'Reminder'),
-
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, TecSupport.id);
                     },
                     child: const NewCard(text: 'Tec Support'),
                   ),
-
                   GestureDetector(
                     onTap: (){
                       Navigator.pushNamed(context, InitialPage.id);
                     },
-                   child: const Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                    ),
-                    color: Colors.redAccent,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.exit_to_app
-                          ),
-                          SizedBox(
-                            width: 20.0,
-                          ),
-                          Text(
-                            'Log Out',
-                            style: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                    child: const Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                      ),
+                      color: Colors.redAccent,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.exit_to_app),
+                            SizedBox(width: 20.0),
+                            Text(
+                              'Log Out',
+                              style: TextStyle(
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                                   ),
-                 ),
-
+                  ),
                   const SizedBox(height: 30.0),
                 ],
               ),

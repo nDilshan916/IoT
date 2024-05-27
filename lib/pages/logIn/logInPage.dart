@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:iot/pages/homePage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LogInPage extends StatefulWidget {
-  const LogInPage({Key? key}) : super(key: key);
+  const LogInPage({super.key});
   static const String id = 'LogInPage';
 
   @override
@@ -10,9 +14,12 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-   String email = '';
-   String password = '';
+  final _auth = FirebaseAuth.instance;
+
+  String email = '';
+  String password = '';
   bool isPasswordVisible = false;
+  bool isLoading = false;
 
   // Specific email to verify against
   static const String specificEmail = 'example@example.com';
@@ -68,10 +75,12 @@ class _LogInPageState extends State<LogInPage> {
                       },
                       decoration: InputDecoration(
                         suffixIcon: Icon(
-                          isEmailVerified ? Icons.check : Icons.check_circle_outline,
+                          isEmailVerified
+                              ? Icons.check
+                              : Icons.check_circle_outline,
                           color: isEmailVerified ? Colors.green : Colors.grey,
                         ),
-                        label: Text(
+                        label: const Text(
                           'Gmail',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -104,11 +113,9 @@ class _LogInPageState extends State<LogInPage> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xffB81736),
-
+                          ),
                         ),
                       ),
-                    ),
-
                     ),
                     const Align(
                       alignment: Alignment.centerRight,
@@ -127,15 +134,40 @@ class _LogInPageState extends State<LogInPage> {
                     signButton(
                       email: email,
                       password: password,
-                      onTap: () {
-                        // Verify email and password
-                        if (isEmailVerified) {
-                          print('Email is verified');
-                          // Here you can add further verification logic for the password
-                          print(password);
-                        } else {
-                          print('Email is not verified');
-                          // Handle incorrect email address
+                      onTap: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        try {
+                          final user = await _auth.signInWithEmailAndPassword(
+                              email: email, password: password);
+                          if (user != null) {
+                            Navigator.pushNamed(context, HomePage.id);
+                          }
+                        } catch (e) {
+                          print(e);
+                          Alert(
+                            context: context,
+                            type: AlertType.error,
+                            title: "ALERT",
+                            desc: "Check the email and password again!",
+                            buttons: [
+                              DialogButton(
+                                onPressed: () => Navigator.pop(context),
+                                width: 120,
+                                child: const Text(
+                                  "Close",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                              )
+                            ],
+                          ).show();
+                        } finally {
+                          setState(() {
+                            isLoading = false;
+                          });
                         }
                       },
                     ),
@@ -159,7 +191,6 @@ class _LogInPageState extends State<LogInPage> {
                             child: const Text(
                               "Sign up",
                               style: TextStyle(
-                                ///done login page
                                   fontWeight: FontWeight.bold,
                                   fontSize: 17,
                                   color: Colors.black),
@@ -173,6 +204,13 @@ class _LogInPageState extends State<LogInPage> {
               ),
             ),
           ),
+          if (isLoading)
+            Center(
+              child: SpinKitFadingCircle(
+                color: Colors.black,
+                size: 90.0,
+              ),
+            ),
         ],
       ),
     );
@@ -181,10 +219,7 @@ class _LogInPageState extends State<LogInPage> {
 
 class signButton extends StatelessWidget {
   const signButton(
-      {Key? key,
-        required this.email,
-        required this.password,
-        required this.onTap});
+      {required this.email, required this.password, required this.onTap});
 
   final String email;
   final String password;
@@ -195,7 +230,7 @@ class signButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(top: 95.0),
+        margin: const EdgeInsets.only(top: 95.0),
         height: 55,
         width: 300,
         decoration: BoxDecoration(

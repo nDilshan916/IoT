@@ -1,23 +1,26 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iot/pages/PowerUsagePage.dart';
 import 'package:iot/pages/homePage.dart';
 import 'package:iot/pages/logIn/initialPage.dart';
 import 'package:iot/pages/logIn/logInPage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
-import 'package:iot/pages/settingPages/BillCircle.dart';
-import 'package:iot/pages/settingPages/TecSupport.dart';
+import 'package:iot/pages/settingPages/billCircle.dart';
+import 'package:iot/pages/settingPages/tecSupport.dart';
 import 'package:iot/pages/subPages/KitchenPage.dart';
 import 'package:iot/pages/subPages/Room_1_Page.dart';
 import 'package:iot/pages/switchPage.dart';
 import 'package:iot/pages/settingPage.dart';
+import 'firebase_options.dart';
 import 'pages/eBilPage.dart';
 import 'package:iot/pages/subPages/LivingRoomPage.dart';
+import 'package:firebase_core/firebase_core.dart';
 // Import the wifi_controller.dart file
 
-Future main() async{
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const IoTApp());
 }
 
@@ -44,9 +47,9 @@ class IoTApp extends StatelessWidget {
       initialRoute: InitialPage.id,
       routes: {
         InitialPage.id: (context) => const InitialPage(),
-        SignUpPage.id: (context) => const SignUpPage(),
+        SignUpPage.id: (context) =>  SignUpPage(),
         LogInPage.id: (context) => const LogInPage(),
-        HomePage.id: (context) =>  HomePage(),
+        HomePage.id: (context) =>  const HomePage(),
         SwitchPage.id: (context) => const SwitchPage(),
         PowerUsagePage.id: (context) =>  const PowerUsagePage(),
         SettingPage.id: (context) =>  const SettingPage(),

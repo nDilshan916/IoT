@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iot/components//bottom_bar.dart';
 import 'package:iot/components/daily_usage_progress.dart';
@@ -6,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   static const String id = 'homePage';
+
+  const HomePage({super.key});
   @override
   State<HomePage> createState() => _HomePageState();
 }
