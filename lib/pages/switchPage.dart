@@ -16,7 +16,19 @@ class SwitchPage extends StatefulWidget {
 }
 
 class _SwitchPageState extends State<SwitchPage> {
-  late bool isRoom1On = false;
+
+  //Living Room
+  bool isLivingRoomOn = false;
+  bool isLrACOn = false;
+  bool isLrLight1On = false;
+
+  //room 1
+  bool isRoom1On = false;
+  bool isR1FanOn = false;
+  bool isR1Light1On = false;
+  bool isR1Light2On = false;
+
+
 
   @override
   void initState() {
@@ -27,7 +39,13 @@ class _SwitchPageState extends State<SwitchPage> {
   void _loadSwitchStates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      isRoom1On = prefs.getBool('isFanOn') ?? false;
+      isR1FanOn = prefs.getBool('isR1FanOn') ?? false;
+      isR1Light1On = prefs.getBool('isR1Light1On') ?? false;
+      isR1Light2On = prefs.getBool('isR1Light2On') ?? false;
+      isLrACOn = prefs.getBool('isLrACOn') ?? false;
+      isLrLight1On = prefs.getBool('isLrLight1On') ?? false;
+      isRoom1On = isR1FanOn || isR1Light1On || isR1Light2On;
+      isLivingRoomOn = isLrACOn || isLrLight1On;
     });
   }
 
@@ -58,12 +76,14 @@ class _SwitchPageState extends State<SwitchPage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, LivingRoomPage.id);
+                            Navigator.pushNamed(context, LivingRoomPage.id).then((_) {
+                              _loadSwitchStates(); // Reload switch states when coming back
+                            });
                           },
-                          child: const SwitchCards(
+                          child: SwitchCards(
                             switchImage: 'images/living room switch.png',
                             switchName: 'Living Room',
-                            isSwitchOn: false, // Assuming false for demo
+                            isSwitchOn: isLivingRoomOn, // Assuming false for demo
                           ),
                         ),
                       ),

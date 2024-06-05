@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Room_1_Page extends StatefulWidget {
   static const String id = 'Room1Page';
@@ -13,8 +14,10 @@ class Room_1_Page extends StatefulWidget {
 }
 
 class _Room_1_PageState extends State<Room_1_Page> {
-  late bool isFanOn = false;
-  late SharedPreferences _prefs;
+  late bool isR1FanOn = false;
+  late bool isR1Light1On = false;
+  late bool isR1Light2On = false;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -23,14 +26,35 @@ class _Room_1_PageState extends State<Room_1_Page> {
   }
 
   void _loadSwitchState() async {
-    _prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      isFanOn = _prefs.getBool('isFanOn') ?? false;
+      isR1FanOn = prefs.getBool('isR1FanOn') ?? false;
+      isR1Light1On = prefs.getBool('isR1Light1On') ?? false;
+      isR1Light2On = prefs.getBool('isR1Light2On') ?? false;
     });
   }
 
-  void _saveSwitchState(bool value) async {
-    await _prefs.setBool('isFanOn', value);
+  void _saveSwitchState(String key, bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+    await _updateTheFireStore(key, value);
+  }
+
+  Future<void> _updateTheFireStore(String key, bool status) async {
+    if (key == 'isR1FanOn') {
+      await _firestore.collection('Room1').doc('FanStatus').set({
+        'isR1FanOn': status,
+      });
+    } else if (key == 'isR1Light1On') {
+      await _firestore.collection('Room1').doc('Light1Status').set({
+        'isR1Light1On': status,
+      });
+    } else if (key == 'isR1Light2On') {
+      await _firestore.collection('Room1').doc('Light2Status').set({
+        'isR1Light2On': status,
+      });
+    }
+
   }
 
   @override
@@ -52,17 +76,65 @@ class _Room_1_PageState extends State<Room_1_Page> {
                       SwitchCards(
                         switchImage: 'images/fan_switch.png',
                         switchName: 'Fan',
-                        isSwitchOn: isFanOn,
+                        isSwitchOn: isR1FanOn,
                       ),
                       Positioned(
                         bottom: 1,
                         right: 20,
                         child: Switch(
-                          value: isFanOn,
+                          value: isR1FanOn,
                           onChanged: (value) {
                             setState(() {
-                              isFanOn = value;
-                              _saveSwitchState(isFanOn);
+                              isR1FanOn = value;
+                              _saveSwitchState('isR1FanOn', isR1FanOn);
+                            });
+                          },
+                          activeTrackColor: Colors.white70,
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    children: [
+                      SwitchCards(
+                        switchImage: 'images/light_switch.png',
+                        switchName: 'Light 1',
+                        isSwitchOn: isR1Light1On,
+                      ),
+                      Positioned(
+                        bottom: 1,
+                        right: 20,
+                        child: Switch(
+                          value: isR1Light1On,
+                          onChanged: (value) {
+                            setState(() {
+                              isR1Light1On = value;
+                              _saveSwitchState('isR1Light1On', isR1Light1On);
+                            });
+                          },
+                          activeTrackColor: Colors.white70,
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    children: [
+                      SwitchCards(
+                        switchImage: 'images/light_switch.png',
+                        switchName: 'Light 2',
+                        isSwitchOn: isR1Light2On,
+                      ),
+                      Positioned(
+                        bottom: 1,
+                        right: 20,
+                        child: Switch(
+                          value: isR1Light2On,
+                          onChanged: (value) {
+                            setState(() {
+                              isR1Light2On = value;
+                              _saveSwitchState('isR1Light2On', isR1Light2On);
                             });
                           },
                           activeTrackColor: Colors.white70,
