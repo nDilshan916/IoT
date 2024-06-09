@@ -4,19 +4,19 @@ import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class Room_1_Page extends StatefulWidget {
-  static const String id = 'Room1Page';
+class Room_3_Page extends StatefulWidget {
+  static const String id = 'Room3Page';
 
-  const Room_1_Page({super.key});
+  const Room_3_Page({super.key});
 
   @override
-  State<Room_1_Page> createState() => _Room_1_PageState();
+  State<Room_3_Page> createState() => _Room_3_PageState();
 }
 
-class _Room_1_PageState extends State<Room_1_Page> {
-  late bool isR1FanOn = false;
-  late bool isR1Light1On = false;
-  late bool isR1Light2On = false;
+class _Room_3_PageState extends State<Room_3_Page> {
+  late bool isR3FanOn = false;
+  late bool isR3Light1On = false;
+  late bool isR3Light2On = false;
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
   @override
@@ -28,9 +28,9 @@ class _Room_1_PageState extends State<Room_1_Page> {
   void _loadSwitchState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      isR1FanOn = prefs.getBool('isR1FanOn') ?? false;
-      isR1Light1On = prefs.getBool('isR1Light1On') ?? false;
-      isR1Light2On = prefs.getBool('isR1Light2On') ?? false;
+      isR3FanOn = prefs.getBool('isR3FanOn') ?? false;
+      isR3Light1On = prefs.getBool('isR3Light1On') ?? false;
+      isR3Light2On = prefs.getBool('isR3Light2On') ?? false;
     });
   }
 
@@ -41,17 +41,17 @@ class _Room_1_PageState extends State<Room_1_Page> {
   }
 
   Future<void> _updateTheRealtimeDatabase(String key, bool status) async {
-    if (key == 'isR1FanOn') {
-      await _databaseRef.child('Room1').child('FanStatus').set({
-        'isR1FanOn': status,
+    if (key == 'isR3FanOn') {
+      await _databaseRef.child('Room3').child('FanStatus').set({
+        'isR3FanOn': status,
       });
-    } else if (key == 'isR1Light1On') {
-      await _databaseRef.child('Room1').child('Light1Status').set({
-        'isR1Light1On': status,
+    } else if (key == 'isR3Light1On') {
+      await _databaseRef.child('Room3').child('Light1Status').set({
+        'isR3Light1On': status,
       });
-    } else if (key == 'isR1Light2On') {
-      await _databaseRef.child('Room1').child('Light2Status').set({
-        'isR1Light2On': status,
+    } else if (key == 'isR3Light2On') {
+      await _databaseRef.child('Room3').child('Light2Status').set({
+        'isR3Light2On': status,
       });
     }
   }
@@ -61,7 +61,7 @@ class _Room_1_PageState extends State<Room_1_Page> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text('Room 1'),
+        title: const Text('Room 3'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,17 +75,17 @@ class _Room_1_PageState extends State<Room_1_Page> {
                       SwitchCards(
                         switchImage: 'images/fan_switch.png',
                         switchName: 'Fan',
-                        isSwitchOn: isR1FanOn,
+                        isSwitchOn: isR3FanOn,
                       ),
                       Positioned(
                         bottom: 1,
                         right: 20,
                         child: Switch(
-                          value: isR1FanOn,
+                          value: isR3FanOn,
                           onChanged: (value) {
                             setState(() {
-                              isR1FanOn = value;
-                              _saveSwitchState('isR1FanOn', isR1FanOn);
+                              isR3FanOn = value;
+                              _saveSwitchState('isR3FanOn', isR3FanOn);
                             });
                           },
                           activeTrackColor: Colors.white70,
@@ -99,17 +99,17 @@ class _Room_1_PageState extends State<Room_1_Page> {
                       SwitchCards(
                         switchImage: 'images/light_switch.png',
                         switchName: 'Light 1',
-                        isSwitchOn: isR1Light1On,
+                        isSwitchOn: isR3Light1On,
                       ),
                       Positioned(
                         bottom: 1,
                         right: 20,
                         child: Switch(
-                          value: isR1Light1On,
+                          value: isR3Light1On,
                           onChanged: (value) {
                             setState(() {
-                              isR1Light1On = value;
-                              _saveSwitchState('isR1Light1On', isR1Light1On);
+                              isR3Light1On = value;
+                              _saveSwitchState('isR3Light1On', isR3Light1On);
                             });
                           },
                           activeTrackColor: Colors.white70,
@@ -123,17 +123,17 @@ class _Room_1_PageState extends State<Room_1_Page> {
                       SwitchCards(
                         switchImage: 'images/light_switch.png',
                         switchName: 'Light 2',
-                        isSwitchOn: isR1Light2On,
+                        isSwitchOn: isR3Light2On,
                       ),
                       Positioned(
                         bottom: 1,
                         right: 20,
                         child: Switch(
-                          value: isR1Light2On,
+                          value: isR3Light2On,
                           onChanged: (value) {
                             setState(() {
-                              isR1Light2On = value;
-                              _saveSwitchState('isR1Light2On', isR1Light2On);
+                              isR3Light2On = value;
+                              _saveSwitchState('isR3Light2On', isR3Light2On);
                             });
                           },
                           activeTrackColor: Colors.white70,
@@ -146,7 +146,7 @@ class _Room_1_PageState extends State<Room_1_Page> {
               ),
             ),
           ),
-          const bottomBar(currentPageId: Room_1_Page.id),
+          const bottomBar(currentPageId: Room_3_Page.id),
         ],
       ),
     );

@@ -1,10 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/components/bottom_bar.dart';
+import 'package:iot/components/reusable_card.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-class KitchenPage extends StatelessWidget {
+class KitchenPage extends StatefulWidget {
   static const String id = 'KitchenPage';
 
   const KitchenPage({super.key});
+
+  @override
+  State<KitchenPage> createState() => _KitchenPage();
+}
+
+class _KitchenPage extends State<KitchenPage> {
+  late bool isKLight1On = false;
+  late bool isKLight2On = false;
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSwitchState();
+  }
+
+  void _loadSwitchState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isKLight1On = prefs.getBool('isKLight1On') ?? false;
+      isKLight2On = prefs.getBool('isKLight2On') ?? false;
+    });
+  }
+
+  void _saveSwitchState(String key, bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+    await _updateTheRealtimeDatabase(key, value);
+  }
+
+  Future<void> _updateTheRealtimeDatabase(String key, bool status) async {
+    if (key == 'isKLight1On') {
+      await _databaseRef.child('Kitchen').child('Light1Status').set({
+        'isKLight1On': status,
+      });
+    } else if (key == 'isKLight2On') {
+      await _databaseRef.child('Kitchen').child('Light2Status').set({
+        'isKLight2On': status,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +57,67 @@ class KitchenPage extends StatelessWidget {
         automaticallyImplyLeading: true,
         title: const Text('Kitchen'),
       ),
-      body: const Column(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Center(
-            child: Text(
-              'Switches in the Kitchen',
-              style: TextStyle(fontSize: 24),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+
+                  Stack(
+                    children: [
+                      SwitchCards(
+                        switchImage: 'images/light_switch.png',
+                        switchName: 'Light 1',
+                        isSwitchOn: isKLight1On,
+                      ),
+                      Positioned(
+                        bottom: 1,
+                        right: 20,
+                        child: Switch(
+                          value: isKLight1On,
+                          onChanged: (value) {
+                            setState(() {
+                              isKLight1On = value;
+                              _saveSwitchState('isKLight1On', isKLight1On);
+                            });
+                          },
+                          activeTrackColor: Colors.white70,
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    children: [
+                      SwitchCards(
+                        switchImage: 'images/light_switch.png',
+                        switchName: 'Light 2',
+                        isSwitchOn: isKLight2On,
+                      ),
+                      Positioned(
+                        bottom: 1,
+                        right: 20,
+                        child: Switch(
+                          value: isKLight2On,
+                          onChanged: (value) {
+                            setState(() {
+                              isKLight2On = value;
+                              _saveSwitchState('isKLight2On', isKLight2On);
+                            });
+                          },
+                          activeTrackColor: Colors.white70,
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          bottomBar(currentPageId: id),
+          const bottomBar(currentPageId: KitchenPage.id),
         ],
       ),
     );

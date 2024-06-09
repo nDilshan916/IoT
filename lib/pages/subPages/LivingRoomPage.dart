@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '../../components/reusable_card.dart';
 
@@ -17,8 +17,7 @@ class LivingRoomPage extends StatefulWidget {
 class _LivingRoomPageState extends State<LivingRoomPage> {
   late bool isLrACOn = false;
   late bool isLrLight1On = false;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
@@ -26,7 +25,7 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
     _loadSwitchState();
   }
 
-  void _loadSwitchState() async{
+  void _loadSwitchState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       isLrACOn = prefs.getBool('isLrACOn') ?? false;
@@ -34,25 +33,25 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
     });
   }
 
-  void _saveSwitchState(String key, bool value) async{
+  void _saveSwitchState(String key, bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(key, value);
-    //update firestore
-    await _updateTheFireStore(key, value);
-
+    // Update Firebase Realtime Database
+    await _updateRealtimeDatabase(key, value);
   }
 
-  Future<void> _updateTheFireStore(String key, bool status) async {
+  Future<void> _updateRealtimeDatabase(String key, bool status) async {
     if (key == 'isLrACOn') {
-      await _firestore.collection('LivingRoom').doc('ACStatus').set({
+      await _databaseReference.child('LivingRoom/ACStatus').set({
         'isLrACOn': status,
       });
     } else if (key == 'isLrLight1On') {
-      await _firestore.collection('LivingRoom').doc('Light1Status').set({
+      await _databaseReference.child('LivingRoom/Light1Status').set({
         'isLrLight1On': status,
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,12 +114,11 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),
           ),
-          const bottomBar(currentPageId:  LivingRoomPage.id),
+          const bottomBar(currentPageId: LivingRoomPage.id),
         ],
       ),
     );

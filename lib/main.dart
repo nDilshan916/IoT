@@ -8,6 +8,9 @@ import 'package:iot/pages/settingPages/billCircle.dart';
 import 'package:iot/pages/settingPages/tecSupport.dart';
 import 'package:iot/pages/subPages/KitchenPage.dart';
 import 'package:iot/pages/subPages/Room_1_Page.dart';
+import 'package:iot/pages/subPages/Room_2_Page.dart';
+import 'package:iot/pages/subPages/Room_3_Page.dart';
+import 'package:iot/pages/subPages/Outdoor.dart';
 import 'package:iot/pages/switchPage.dart';
 import 'package:iot/pages/settingPage.dart';
 import 'firebase_options.dart';
@@ -56,6 +59,9 @@ class IoTApp extends StatelessWidget {
         eBil.id: (context) => const eBil(),
         LivingRoomPage.id: (context) => const LivingRoomPage(),
         Room_1_Page.id: (context) => const Room_1_Page(),
+        Room_2_Page.id: (context) => const Room_2_Page(),
+        Room_3_Page.id: (context) => const Room_3_Page(),
+        Outdoor.id: (context) => const Outdoor(),
         KitchenPage.id: (context) => const KitchenPage(),
         TecSupport.id: (context) => const TecSupport(),
         BillCircle.id: (context) =>  const BillCircle(),
