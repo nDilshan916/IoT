@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/pages/logIn/initialPage.dart';
 import 'package:iot/pages/settingPages/tecSupport.dart';
@@ -134,7 +135,11 @@ class _SettingPageState extends State<SettingPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 30.0),
-                  const NewCard(text: 'Set Limit'),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, SetLimit.id);
+                    },
+                    child: const NewCard(text: 'Set Limit'),),
                   const NewCard(text: 'Reminder'),
                   GestureDetector(
                     onTap: () {
@@ -147,6 +152,7 @@ class _SettingPageState extends State<SettingPage> {
                       Navigator.pushNamed(context, InitialPage.id);
                     },
                     child: const Card(
+                      elevation: 5.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(35.0)),
                       ),
@@ -191,6 +197,7 @@ class NewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5.0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(35.0)),
       ),

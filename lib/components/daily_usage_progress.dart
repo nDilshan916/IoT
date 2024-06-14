@@ -19,41 +19,40 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
   void initState() {
     super.initState();
     usageLimit = widget.initialUsageLimit;
-    // _checkUsageAndNotify();
   }
 
   @override
   void didUpdateWidget(DailyUsageProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.dailyUsage != oldWidget.dailyUsage) {
-      // _checkUsageAndNotify();
+      // Update usage and notify if needed
     }
   }
 
-  // void _checkUsageAndNotify() {
-  //   double usagePercentage = widget.dailyUsage / usageLimit;
-  //   if (usagePercentage >= 0.98) {
-  //     NotificationService().showNotification(
-  //       'Usage Alert',
-  //       'Your daily power usage has reached 98% of the limit!',
-  //     );
-  //   }
-  // }
+  void _updateUsageLimit(double newLimit) {
+    setState(() {
+      usageLimit = newLimit;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    //change these things
     double barWidth = 0.15;
     double setRadius = 0.65;
+    double usageWattLimit = usageLimit*1000;
+    double dailyUsage = widget.dailyUsage;
     Color? secondColor = Colors.grey[350];
-    // Calculate the percentage of the usage limit that has been used
-    double usagePercentage = widget.dailyUsage / usageLimit;
+    double usagePercentage =  dailyUsage / usageWattLimit;
     if (usagePercentage > 1) {
-      usagePercentage = 1; // to ensure the percentage does not exceed 100%
+      usagePercentage = 1;
     }
 
+    print('usage precentage: $usagePercentage');
+    print('usage watt limit: $usageWattLimit');
+    print('wdt dailyUsage: $dailyUsage');
+
     return Card(
-      margin: const EdgeInsets.only( left: 8, right: 8),
+      margin: const EdgeInsets.only(left: 8, right: 8),
       elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Column(
@@ -93,8 +92,8 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       color: usagePercentage > 0.8
                           ? Colors.red
                           : (usagePercentage > 0.5
-                              ? Colors.orange
-                              : Colors.green),
+                          ? Colors.orange
+                          : Colors.green),
                     )
                   ],
                 ),
@@ -112,7 +111,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       axisValue: 50,
                       positionFactor: 0,
                       widget: Text(
-                        '${(usagePercentage * 100).toStringAsFixed(1)}%', //change the decimal point here
+                        '${(usagePercentage * 100).toStringAsFixed(1)}%',
                         style: const TextStyle(
                             fontSize: 45.0, fontWeight: FontWeight.bold),
                       ),
@@ -140,22 +139,21 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
               ],
             ),
           ),
-          Slider(
-            value: usageLimit,
-            min: 100.0,
-            max: 500.0,
-            // divisions: 10,
-            label: usageLimit.toStringAsFixed(1),
-            onChanged: (double value) {
-              setState(() {
-                usageLimit = value;
-              });
-            },
-          ),
-          const Text(
-            'Set Daily Usage Limit',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-          ),
+          // Slider(
+          //   value: usageLimit*1000,
+          //   min: 100.0,
+          //   max: 50000.0,
+          //   label: usageLimit.toStringAsFixed(1),
+          //   onChanged: (double value) {
+          //     setState(() {
+          //       usageLimit = value;
+          //     });
+          //   },
+          // ),
+          // const Text(
+          //   'Set Daily Usage Limit',
+          //   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+          // ),
         ],
       ),
     );

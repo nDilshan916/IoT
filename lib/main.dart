@@ -5,6 +5,7 @@ import 'package:iot/pages/logIn/initialPage.dart';
 import 'package:iot/pages/logIn/logInPage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
 import 'package:iot/pages/settingPages/billCircle.dart';
+import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:iot/pages/settingPages/tecSupport.dart';
 import 'package:iot/pages/subPages/KitchenPage.dart';
 import 'package:iot/pages/subPages/Room_1_Page.dart';
@@ -63,6 +64,7 @@ class IoTApp extends StatelessWidget {
         Room_3_Page.id: (context) => const Room_3_Page(),
         Outdoor.id: (context) => const Outdoor(),
         KitchenPage.id: (context) => const KitchenPage(),
+        SetLimit.id: (context) => const SetLimit(currentLimit: 0,),
         TecSupport.id: (context) => const TecSupport(),
         BillCircle.id: (context) =>  const BillCircle(),
       },
