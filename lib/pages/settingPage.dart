@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot/pages/settingPages/reminderPage.dart';
 import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/pages/logIn/initialPage.dart';
@@ -73,51 +74,51 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: isEditing
                     ? Row(
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        controller: _controller,
-                        style: const TextStyle(fontSize: 30.0),
-                        onSubmitted: (value) {
-                          setState(() {
-                            userName = value;
-                            isEditing = false;
-                          });
-                          _saveUserName(value);
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.check),
-                      onPressed: () {
-                        setState(() {
-                          userName = _controller.text;
-                          isEditing = false;
-                        });
-                        _saveUserName(_controller.text);
-                      },
-                    ),
-                  ],
-                )
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: TextField(
+                              controller: _controller,
+                              style: const TextStyle(fontSize: 30.0),
+                              onSubmitted: (value) {
+                                setState(() {
+                                  userName = value;
+                                  isEditing = false;
+                                });
+                                _saveUserName(value);
+                              },
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () {
+                              setState(() {
+                                userName = _controller.text;
+                                isEditing = false;
+                              });
+                              _saveUserName(_controller.text);
+                            },
+                          ),
+                        ],
+                      )
                     : Row(
-                  children: [
-                    Text(
-                      userName,
-                      style: const TextStyle(fontSize: 30.0),
-                    ),
-                    const SizedBox(width: 30.0),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        setState(() {
-                          isEditing = true;
-                          _controller.text = userName;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+                        children: [
+                          Text(
+                            userName,
+                            style: const TextStyle(fontSize: 30.0),
+                          ),
+                          const SizedBox(width: 30.0),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              setState(() {
+                                isEditing = true;
+                                _controller.text = userName;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
               ),
             ],
           ),
@@ -129,18 +130,25 @@ class _SettingPageState extends State<SettingPage> {
             elevation: 0.5,
             color: Colors.white70,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 30.0),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(context, SetLimit.id);
                     },
-                    child: const NewCard(text: 'Set Limit'),),
-                  const NewCard(text: 'Reminder'),
+                    child: const NewCard(text: 'Set Limit'),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, ReminderPage.id);
+                    },
+                    child: const NewCard(text: 'Reminder'),
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, TecSupport.id);
@@ -148,7 +156,7 @@ class _SettingPageState extends State<SettingPage> {
                     child: const NewCard(text: 'Tec Support'),
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(context, InitialPage.id);
                     },
                     child: const Card(
@@ -158,7 +166,8 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       color: Colors.redAccent,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 15.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 60.0, vertical: 15.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [

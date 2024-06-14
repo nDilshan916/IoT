@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/daily_usage_progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:iot/notification_service.dart';
 import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   late double usageLimit; // This can be user-defined or fetched from a database
   double monthlyUsage = 0.0; // This should be fetched from a database
   double lastMonthBill = 1500.0; // This should be fetched from a database
+  double reminderValue = 0.0;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _HomePageState extends State<HomePage> {
     fetchUsageLimit();
     fetchDailyUsage();
     fetchMonthlyUsage();
+    fetchReminderValue();
   }
 
   void getCurrentUser() {
@@ -73,6 +76,10 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         dailyUsage = double.parse(dailyTotal.toStringAsFixed(2));
       });
+
+      //check if daily usage exceeds reminder value
+      checkReminder(dailyTotal);
+
     } else {
       print('No hourly usage data available.');
     }
@@ -114,6 +121,21 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         usageLimit = newLimit;
       });
+    }
+  }
+  void fetchReminderValue() async{
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      reminderValue = prefs.getDouble('reminderValue') ?? 0.00;
+    });
+  }
+
+  void checkReminder(double usage){
+    if(reminderValue > 0 && usage >= (reminderValue/100)*usageLimit*1000){
+      NotificationService().showNotification(0,
+          'Usage Reminder',
+          'you have reached ${reminderValue.toStringAsFixed(0)}% of your daily usage limit.',
+      );
     }
   }
 

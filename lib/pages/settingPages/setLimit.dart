@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:iot/components/bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:iot/components/bottom_bar.dart';
 
 class SetLimit extends StatefulWidget {
   static const String id = "SetLimit";
@@ -21,6 +21,7 @@ class _SetLimitState extends State<SetLimit> {
   @override
   void initState() {
     super.initState();
+    _controller = TextEditingController();
     _loadLimit();
   }
 
@@ -28,7 +29,7 @@ class _SetLimitState extends State<SetLimit> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _currentLimit = prefs.getDouble('usageLimit') ?? widget.currentLimit;
-      _controller = TextEditingController(text: '$_currentLimit');
+      _controller.text = '$_currentLimit';
       curWattLimit = _currentLimit * 1000;
     });
   }
@@ -150,7 +151,7 @@ class _SetLimitState extends State<SetLimit> {
               ),
             ),
           ),
-          bottomBar(currentPageId: SetLimit.id)
+          const bottomBar(currentPageId: SetLimit.id)
         ],
       ),
     );

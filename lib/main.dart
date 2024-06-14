@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:iot/pages/PowerUsagePage.dart';
 import 'package:iot/pages/homePage.dart';
 import 'package:iot/pages/logIn/initialPage.dart';
 import 'package:iot/pages/logIn/logInPage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
 import 'package:iot/pages/settingPages/billCircle.dart';
+import 'package:iot/pages/settingPages/reminderPage.dart';
 import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:iot/pages/settingPages/tecSupport.dart';
 import 'package:iot/pages/subPages/KitchenPage.dart';
@@ -15,6 +17,7 @@ import 'package:iot/pages/subPages/Outdoor.dart';
 import 'package:iot/pages/switchPage.dart';
 import 'package:iot/pages/settingPage.dart';
 import 'firebase_options.dart';
+import 'notification_service.dart';
 import 'pages/eBilPage.dart';
 import 'package:iot/pages/subPages/LivingRoomPage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +28,18 @@ Future main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final InitializationSettings initializationSettings =
+  InitializationSettings(android: initializationSettingsAndroid);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
   runApp(const IoTApp());
 }
 
@@ -65,6 +80,7 @@ class IoTApp extends StatelessWidget {
         Outdoor.id: (context) => const Outdoor(),
         KitchenPage.id: (context) => const KitchenPage(),
         SetLimit.id: (context) => const SetLimit(currentLimit: 0,),
+        ReminderPage.id: (context) => ReminderPage(),
         TecSupport.id: (context) => const TecSupport(),
         BillCircle.id: (context) =>  const BillCircle(),
       },
