@@ -212,6 +212,7 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5.0,
+      color: Colors.red,
       margin: EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -235,7 +236,7 @@ class InfoCard extends StatelessWidget {
                   text2,
                   style: TextStyle(
                     fontSize: 16.0,
-                    color: Colors.grey[600],
+                    color: Colors.grey[100],
                   ),
                 ),
               ],

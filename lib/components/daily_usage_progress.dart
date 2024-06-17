@@ -39,10 +39,10 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
   Widget build(BuildContext context) {
     double barWidth = 0.15;
     double setRadius = 0.65;
-    double usageWattLimit = usageLimit*1000;
+    double usageWattLimit = usageLimit * 1000;
     double dailyUsage = widget.dailyUsage;
     Color? secondColor = Colors.grey[350];
-    double usagePercentage =  dailyUsage / usageWattLimit;
+    double usagePercentage = dailyUsage / usageWattLimit;
     if (usagePercentage > 1) {
       usagePercentage = 1;
     }
@@ -51,10 +51,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
     print('usage watt limit: $usageWattLimit');
     print('wdt dailyUsage: $dailyUsage');
 
-    return Card(
-      margin: const EdgeInsets.only(left: 8, right: 8),
-      elevation: 5.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+    return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -65,7 +62,10 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
               animationDuration: 5000,
               title: const GaugeTitle(
                 text: 'Daily Power Usage',
-                textStyle: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                textStyle: TextStyle(
+                    fontSize: 35.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               axes: <RadialAxis>[
                 RadialAxis(
@@ -92,8 +92,8 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       color: usagePercentage > 0.8
                           ? Colors.red
                           : (usagePercentage > 0.5
-                          ? Colors.orange
-                          : Colors.green),
+                              ? Colors.orange
+                              : Colors.green),
                     )
                   ],
                 ),

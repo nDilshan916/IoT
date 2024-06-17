@@ -67,6 +67,7 @@ class bottomBar extends StatelessWidget {
     return Container(
       height: 46.0,
       color: const Color(0xFF0A0E21),
+      // color: Color(0xFF8E0303),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
