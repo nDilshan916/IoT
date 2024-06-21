@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   double dailyUsage = 0.0; // This should be fetched from a database
   late double usageLimit; // This can be user-defined or fetched from a database
   double monthlyUsage = 0.0; // This should be fetched from a database
-  double lastMonthBill = 1500.0; // This should be fetched from a database
+  double lastMonthBill = 0.0; // This should be fetched from a database
   double reminderValue = 0.0;
 
   @override
@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
     fetchUsageLimit();
     fetchDailyUsage();
     fetchMonthlyUsage();
+    fetchLastMonthBill();
     fetchReminderValue();
   }
 
@@ -115,6 +116,54 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void fetchLastMonthBill() async {
+    final prefs = await SharedPreferences.getInstance();
+    final double fixedCharge = prefs.getDouble('fixedCharge') ?? 0.0;
+    final double rateX = prefs.getDouble('unitRateX') ?? 0.0;
+    final double rateY = prefs.getDouble('unitRateY') ?? 0.0;
+    final double rateZ = prefs.getDouble('unitRateZ') ?? 0.0;
+    final double rateS = prefs.getDouble('unitRateS') ?? 0.0;
+
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('hourlyUsage');
+    DatabaseEvent event = await databaseReference.once();
+
+    if (event.snapshot.exists) {
+      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+      DateTime now = DateTime.now();
+      DateTime lastMonth = DateTime(now.year, now.month - 1);
+      String lastMonthStr = DateFormat('yyyy-MM').format(lastMonth);
+
+      double lastMonthTotal = 0.0;
+      data.forEach((key, value) {
+        if (key.toString().startsWith(lastMonthStr)) {
+          lastMonthTotal += value.toDouble();
+        }
+      });
+
+      double lastMonthUnits = lastMonthTotal / 1000.0;
+
+      double lastMonthBillAmount = 0.0;
+      if (lastMonthUnits > 93) {
+        lastMonthBillAmount = 31 * rateX + 31 * rateY + 31 * rateZ + (lastMonthUnits - 93) * rateS + fixedCharge;
+      } else if (lastMonthUnits > 62) {
+        lastMonthBillAmount = 31 * rateX + 31 * rateY + (lastMonthUnits - 62) * rateZ + fixedCharge;
+      } else if (lastMonthUnits > 31) {
+        lastMonthBillAmount = 31 * rateX + (lastMonthUnits - 31) * rateY + fixedCharge;
+      } else {
+        lastMonthBillAmount = lastMonthUnits * rateX + fixedCharge;
+      }
+
+      setState(() {
+        lastMonthBill = double.parse(lastMonthBillAmount.toStringAsFixed(2));
+      });
+      print('Last month usage: $lastMonthTotal');
+      print('Bill: $lastMonthBill');
+      print('z rate: $rateZ');
+    } else {
+      print('No hourly usage data available.');
+    }
+  }
+
   void _navigateAndSetLimit() async {
     final newLimit = await Navigator.push(
       context,
@@ -188,7 +237,7 @@ class _HomePageState extends State<HomePage> {
             ),
             InfoCard(
               img: Image.asset('images/money_display.png', width: 50.0),
-              text1: '$lastMonthBill LKR',
+              text1: 'Rs.$lastMonthBill',
               text2: "Total electricity bill last month",
             ),
             const bottomBar(currentPageId: HomePage.id),

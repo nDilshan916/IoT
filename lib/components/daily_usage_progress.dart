@@ -59,7 +59,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
             flex: 1,
             child: SfRadialGauge(
               enableLoadingAnimation: true,
-              animationDuration: 5000,
+              animationDuration: 7000,
               title: const GaugeTitle(
                 text: 'Daily Power Usage',
                 textStyle: TextStyle(
@@ -105,8 +105,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       positionFactor: 0.05,
                       widget: CircleAvatar(
                         backgroundColor: Colors.red,
-                        // radius: 70,
-                        maxRadius: 70,
+                        radius: 70,
                       ),
                     ),
                     GaugeAnnotation(
