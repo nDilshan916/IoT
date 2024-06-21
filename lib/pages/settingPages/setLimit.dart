@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,12 +18,23 @@ class _SetLimitState extends State<SetLimit> {
   late TextEditingController _controller;
   late double _currentLimit;
   late double curWattLimit = 0;
+  late String userId;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     _loadLimit();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userId = user.uid;
+      });
+    }
   }
 
   Future<void> _loadLimit() async {
@@ -58,8 +70,9 @@ class _SetLimitState extends State<SetLimit> {
 
   Future<void> _saveLimit() async {
     // Save to Firebase
-    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('usageLimit');
-    databaseReference.set(_currentLimit).then((_) {
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('usageLimit');
+    databaseReference.set(curWattLimit).then((_) {
       print("Firebase: Limit saved successfully");
     }).catchError((error) {
       print("Firebase: Failed to save limit: $error");
@@ -78,12 +91,12 @@ class _SetLimitState extends State<SetLimit> {
     print('current watt: $curWattLimit');
     return Scaffold(
       appBar: AppBar(
-        title: Text('Set Limit'),
+        title: const Text('Set Limit'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 70.0),
+          const SizedBox(height: 70.0),
           Center(
             child: Card(
               shape: RoundedRectangleBorder(
@@ -98,7 +111,7 @@ class _SetLimitState extends State<SetLimit> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        Text(
+                        const Text(
                           'Set Usage Limit:',
                           style: TextStyle(
                             fontSize: 20.0,
@@ -127,7 +140,7 @@ class _SetLimitState extends State<SetLimit> {
                                 textAlign: TextAlign.center,
                                 onSubmitted: _updateCounterFromText,
                                 onChanged: _updateCounterFromText,
-                                style: TextStyle(fontSize: 20.0),
+                                style: const TextStyle(fontSize: 20.0),
                               ),
                             ),
                             IconButton(
@@ -144,7 +157,7 @@ class _SetLimitState extends State<SetLimit> {
                     ),
                     ElevatedButton(
                       onPressed: _saveLimit,
-                      child: Text('Save'),
+                      child: const Text('Save'),
                     ),
                   ],
                 ),

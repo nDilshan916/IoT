@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:iot/pages/PowerUsagePage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
+import 'notification_service.dart';
+import 'usage_monitor_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/pages/homePage.dart';
 import 'package:iot/pages/logIn/initialPage.dart';
 import 'package:iot/pages/logIn/logInPage.dart';
@@ -16,40 +20,36 @@ import 'package:iot/pages/subPages/Room_3_Page.dart';
 import 'package:iot/pages/subPages/Outdoor.dart';
 import 'package:iot/pages/switchPage.dart';
 import 'package:iot/pages/settingPage.dart';
-import 'firebase_options.dart';
-import 'notification_service.dart';
+import 'package:iot/pages/PowerUsagePage.dart';
 import 'pages/eBilPage.dart';
 import 'package:iot/pages/subPages/LivingRoomPage.dart';
-import 'package:firebase_core/firebase_core.dart';
-// Import the wifi_controller.dart file
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-Future main() async {
+final navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await NotificationService().init();
+  await NotificationService().initialize();
+  UsageMonitorService();
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  final InitializationSettings initializationSettings =
-  InitializationSettings(android: initializationSettingsAndroid);
-
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-  runApp(const IoTApp());
+  runApp(IoTApp(isLoggedIn: isLoggedIn));
 }
 
 class IoTApp extends StatelessWidget {
-  const IoTApp({super.key});
+  final bool isLoggedIn;
+  const IoTApp({required this.isLoggedIn, super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'IoT App',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
@@ -60,19 +60,17 @@ class IoTApp extends StatelessWidget {
             color: Colors.white, // change the back arrow color
           ),
         ),
-
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        // colorScheme: ColorScheme.dark(background: Colors.white12)
       ),
-      initialRoute: InitialPage.id,
+      initialRoute: isLoggedIn ? HomePage.id : InitialPage.id,
       routes: {
         InitialPage.id: (context) => const InitialPage(),
-        SignUpPage.id: (context) =>  SignUpPage(),
+        SignUpPage.id: (context) => const SignUpPage(),
         LogInPage.id: (context) => const LogInPage(),
-        HomePage.id: (context) =>  const HomePage(),
+        HomePage.id: (context) => const HomePage(),
         SwitchPage.id: (context) => const SwitchPage(),
-        PowerUsagePage.id: (context) =>  const PowerUsagePage(),
-        SettingPage.id: (context) =>  const SettingPage(),
+        PowerUsagePage.id: (context) => const PowerUsagePage(),
+        SettingPage.id: (context) => const SettingPage(),
         eBil.id: (context) => const eBil(),
         LivingRoomPage.id: (context) => const LivingRoomPage(),
         Room_1_Page.id: (context) => const Room_1_Page(),
@@ -80,10 +78,10 @@ class IoTApp extends StatelessWidget {
         Room_3_Page.id: (context) => const Room_3_Page(),
         Outdoor.id: (context) => const Outdoor(),
         KitchenPage.id: (context) => const KitchenPage(),
-        SetLimit.id: (context) => const SetLimit(currentLimit: 0,),
-        ReminderPage.id: (context) => ReminderPage(),
+        SetLimit.id: (context) => const SetLimit(currentLimit: 0),
+        ReminderPage.id: (context) => const ReminderPage(),
         TecSupport.id: (context) => const TecSupport(),
-        BillCircle.id: (context) =>  const BillCircle(),
+        BillCircle.id: (context) => const BillCircle(),
       },
     );
   }

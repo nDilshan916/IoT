@@ -4,6 +4,7 @@ import 'package:iot/pages/logIn/signUpPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -21,7 +22,6 @@ class _LogInPageState extends State<LogInPage> {
   bool isPasswordVisible = false;
   bool isLoading = false;
 
-  // Specific email to verify against
   static const String specificEmail = 'example@example.com';
   bool isEmailVerified = false;
 
@@ -142,10 +142,11 @@ class _LogInPageState extends State<LogInPage> {
                         try {
                           final user = await _auth.signInWithEmailAndPassword(
                               email: email, password: password);
-                          if (user != null) {
-                            Navigator.pushNamed(context, HomePage.id);
-                          }
-                        } catch (e) {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setBool('isLoggedIn', true);
+                          Navigator.pushNamed(context, HomePage.id);
+                                                } catch (e) {
                           print(e);
                           Alert(
                             context: context,
@@ -179,7 +180,7 @@ class _LogInPageState extends State<LogInPage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const Text(
-                            "Don't have account?",
+                            "Don't have an account?",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey),
@@ -205,7 +206,7 @@ class _LogInPageState extends State<LogInPage> {
             ),
           ),
           if (isLoading)
-            Center(
+            const Center(
               child: SpinKitFadingCircle(
                 color: Colors.black,
                 size: 90.0,
@@ -219,7 +220,7 @@ class _LogInPageState extends State<LogInPage> {
 
 class signButton extends StatelessWidget {
   const signButton(
-      {required this.email, required this.password, required this.onTap});
+      {super.key, required this.email, required this.password, required this.onTap});
 
   final String email;
   final String password;

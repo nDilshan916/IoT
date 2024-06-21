@@ -37,7 +37,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
 
   @override
   Widget build(BuildContext context) {
-    double barWidth = 0.15;
+    double barWidth = 0.20;
     double setRadius = 0.65;
     double usageWattLimit = usageLimit * 1000;
     double dailyUsage = widget.dailyUsage;
@@ -51,7 +51,7 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
     print('usage watt limit: $usageWattLimit');
     print('wdt dailyUsage: $dailyUsage');
 
-    return Expanded(
+    return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -63,9 +63,10 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
               title: const GaugeTitle(
                 text: 'Daily Power Usage',
                 textStyle: TextStyle(
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 35.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               axes: <RadialAxis>[
                 RadialAxis(
@@ -92,9 +93,9 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       color: usagePercentage > 0.8
                           ? Colors.red
                           : (usagePercentage > 0.5
-                              ? Colors.orange
-                              : Colors.green),
-                    )
+                          ? Colors.orange
+                          : Colors.green),
+                    ),
                   ],
                 ),
                 RadialAxis(
@@ -104,7 +105,8 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       positionFactor: 0.05,
                       widget: CircleAvatar(
                         backgroundColor: Colors.red,
-                        radius: 70,
+                        // radius: 70,
+                        maxRadius: 70,
                       ),
                     ),
                     GaugeAnnotation(
@@ -113,7 +115,9 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                       widget: Text(
                         '${(usagePercentage * 100).toStringAsFixed(1)}%',
                         style: const TextStyle(
-                            fontSize: 45.0, fontWeight: FontWeight.bold),
+                          fontSize: 45.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -135,27 +139,14 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
                     lengthUnit: GaugeSizeUnit.factor,
                     color: Colors.grey[200],
                   ),
-                )
+                ),
               ],
             ),
           ),
-          // Slider(
-          //   value: usageLimit*1000,
-          //   min: 100.0,
-          //   max: 50000.0,
-          //   label: usageLimit.toStringAsFixed(1),
-          //   onChanged: (double value) {
-          //     setState(() {
-          //       usageLimit = value;
-          //     });
-          //   },
-          // ),
-          // const Text(
-          //   'Set Daily Usage Limit',
-          //   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-          // ),
+
         ],
       ),
     );
   }
 }
+

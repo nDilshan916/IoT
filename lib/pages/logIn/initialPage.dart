@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iot/pages/homePage.dart';
 import 'package:iot/pages/logIn/signUpPage.dart';
 
 import 'logInPage.dart';

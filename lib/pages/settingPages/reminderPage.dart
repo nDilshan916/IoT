@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iot/components/bottom_bar.dart';
-import 'package:iot/pages/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+import '../settingPage.dart';
 
 class ReminderPage extends StatefulWidget {
   static const String id = "ReminderPage";
@@ -14,11 +17,22 @@ class ReminderPage extends StatefulWidget {
 
 class _ReminderPageState extends State<ReminderPage> {
   double _reminderValue = 0.0;
+  late String userId;
 
   @override
   void initState() {
     super.initState();
     _loadReminder();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userId = user.uid;
+      });
+    }
   }
 
   void _loadReminder() async {
@@ -29,6 +43,15 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   void _saveReminder(double value) async {
+    // Save to Firebase
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('reminderValue');
+    databaseReference.set(value).then((_) {
+      print("Firebase: Reminder saved successfully");
+    }).catchError((error) {
+      print("Firebase: Failed to save reminder: $error");
+    });
+
+    // Save to SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     prefs.setDouble('reminderValue', value);
   }
@@ -36,7 +59,7 @@ class _ReminderPageState extends State<ReminderPage> {
   void _setReminder() {
     _saveReminder(_reminderValue);
     // Here you might want to schedule a notification or perform any other reminder setup
-    Navigator.pushNamed(context, HomePage.id);
+    Navigator.pushNamed(context, SettingPage.id);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Reminder set at $_reminderValue% usage')),
     );
@@ -46,7 +69,7 @@ class _ReminderPageState extends State<ReminderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Set Reminder'),
+        title: const Text('Set Reminder'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,12 +94,12 @@ class _ReminderPageState extends State<ReminderPage> {
                 Text('Set reminder at ${_reminderValue.toStringAsFixed(0)}% usage'),
                 ElevatedButton(
                   onPressed: _setReminder,
-                  child: Text('Set Reminder'),
+                  child: const Text('Set Reminder'),
                 ),
               ],
             ),
           ),
-          bottomBar(currentPageId: ReminderPage.id)
+          const bottomBar(currentPageId: ReminderPage.id)
         ],
       ),
     );

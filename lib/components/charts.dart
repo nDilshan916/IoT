@@ -3,7 +3,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
 class PowerUsagePage extends StatefulWidget {
-  static const String id = 'PowerUsagePage';
+  // static const String id = 'PowerUsagePage';
 
   const PowerUsagePage({super.key});
 

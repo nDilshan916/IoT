@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/daily_usage_progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:iot/notification_service.dart';
 import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,11 +30,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initializePreferences();
     getCurrentUser();
     fetchUsageLimit();
     fetchDailyUsage();
     fetchMonthlyUsage();
     fetchReminderValue();
+  }
+
+  Future<void> initializePreferences() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   void getCurrentUser() {
@@ -57,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void fetchDailyUsage() async{
+  void fetchDailyUsage() async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref('hourlyUsage');
     DatabaseEvent event = await databaseReference.once();
 
@@ -77,14 +81,15 @@ class _HomePageState extends State<HomePage> {
         dailyUsage = double.parse(dailyTotal.toStringAsFixed(2));
       });
 
-      //check if daily usage exceeds reminder value
-      checkReminder(dailyTotal);
+      // Check if daily usage exceeds reminder value
+      // checkReminder(dailyTotal);
 
     } else {
       print('No hourly usage data available.');
     }
-
   }
+
+
 
   void fetchMonthlyUsage() async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref('hourlyUsage');
@@ -130,19 +135,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void checkReminder(double usage){
-    if(reminderValue > 0 && usage >= (reminderValue/100)*usageLimit*1000){
-      NotificationService().showNotification(0,
-          'Usage Reminder',
-          'you have reached ${reminderValue.toStringAsFixed(0)}% of your daily usage limit.',
-      );
-    }
-  }
+  // void checkReminder(double usage) {
+  //   if (reminderValue > 0 && usage >= (reminderValue / 100) * usageLimit) {
+  //     NotificationService().showNotification(
+  //       0,
+  //       'Usage Reminder',
+  //       'You have reached ${reminderValue.toStringAsFixed(0)}% of your daily usage limit.',
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print('current usage limit: ($usageLimit)');
-    print('dailyUsage : $dailyUsage');
+    print('current usage limit: $usageLimit');
+    print('dailyUsage: $dailyUsage');
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -167,14 +173,11 @@ class _HomePageState extends State<HomePage> {
             // Daily Usage Progress Bar
             Flexible(
               flex: 1,
-              child: SizedBox(
-                height: 400.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DailyUsageProgress(
-                    dailyUsage: dailyUsage,
-                    initialUsageLimit: usageLimit,
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DailyUsageProgress(
+                  dailyUsage: dailyUsage,
+                  initialUsageLimit: usageLimit,
                 ),
               ),
             ),
@@ -213,25 +216,25 @@ class InfoCard extends StatelessWidget {
     return Card(
       elevation: 5.0,
       color: Colors.red,
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             img,
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   text1,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
                   text2,
                   style: TextStyle(

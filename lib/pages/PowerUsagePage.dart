@@ -90,7 +90,7 @@ class _PowerUsagePageState extends State<PowerUsagePage>
 class PowerUsageView extends StatelessWidget {
   final String viewType;
 
-  const PowerUsageView({Key? key, required this.viewType}) : super(key: key);
+  const PowerUsageView({super.key, required this.viewType});
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +129,14 @@ class PowerUsageView extends StatelessWidget {
           chartData = _getYearlyData(usageData);
         }
 
-        chartData.forEach((data) {
+        for (var data in chartData) {
           print('Time: ${data.time}, Usage: ${data.usage}');
-        });
+        }
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: SfCartesianChart(
-            primaryXAxis: CategoryAxis(),
+            primaryXAxis: const CategoryAxis(),
             title: ChartTitle(text: 'Power Usage - $viewType'),
             trackballBehavior: TrackballBehavior(enable: true),
             tooltipBehavior: TooltipBehavior(
@@ -149,7 +149,7 @@ class PowerUsageView extends StatelessWidget {
                 yValueMapper: (_UsageData data, _) => data.usage,
                 name: 'Usage',
                 borderColor: Colors.blueAccent,
-                color: Color.fromRGBO(146, 200, 244, 0.8745098039215686),
+                color: const Color.fromRGBO(146, 200, 244, 0.8745098039215686),
               ),
             ],
           ),
