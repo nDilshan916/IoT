@@ -1,1 +1,35 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"iot-firebase-c9601","appId":"1:127623039843:android:1e053796d4a6f5a6252156","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"iot-firebase-c9601","configurations":{"android":"1:127623039843:android:1e053796d4a6f5a6252156","ios":"1:127623039843:ios:2444afdb713dcd29252156"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "iot-firebase-c9601",
+          "appId": "1:127623039843:android:1e053796d4a6f5a6252156",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "iot-firebase-c9601",
+          "configurations": {
+            "android": "1:127623039843:android:1e053796d4a6f5a6252156",
+            "ios": "1:127623039843:ios:2444afdb713dcd29252156"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

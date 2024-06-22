@@ -35,12 +35,20 @@ class _ReminderPageState extends State<ReminderPage> {
     }
   }
 
-  void _loadReminder() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _reminderValue = prefs.getDouble('reminderValue') ?? 0.0;
+  void _loadReminder() {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('reminderValue');
+    databaseReference.once().then((DatabaseEvent snapshot) { // Change DataSnapshot to DatabaseEvent
+      final value = snapshot.snapshot.value; // Use snapshot.snapshot.value to access data
+      if (value != null) {
+        setState(() {
+          _reminderValue = (value as num).toDouble(); // Ensure the value is converted to double
+        });
+      }
+    }).catchError((error) {
+      print("Failed to load reminder value: $error");
     });
   }
+
 
   void _saveReminder(double value) async {
     // Save to Firebase

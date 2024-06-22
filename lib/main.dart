@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:iot/pages/settingPages/set_To_Off.dart';
 import 'firebase_options.dart';
 import 'notification_service.dart';
 import 'usage_monitor_service.dart';
@@ -78,10 +79,10 @@ class IoTApp extends StatelessWidget {
         Room_3_Page.id: (context) => const Room_3_Page(),
         Outdoor.id: (context) => const Outdoor(),
         KitchenPage.id: (context) => const KitchenPage(),
-        SetLimit.id: (context) => const SetLimit(currentLimit: 0),
+        SetLimit.id: (context) => const SetLimit(),
         ReminderPage.id: (context) => const ReminderPage(),
         TecSupport.id: (context) => const TecSupport(),
-        BillCircle.id: (context) => const BillCircle(),
+        SetToOff.id: (context) => const SetToOff(),
       },
     );
   }

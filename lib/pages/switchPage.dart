@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:iot/pages/subPages/Room_2_Page.dart';
 import 'package:iot/pages/subPages/Room_3_Page.dart';
@@ -54,6 +55,8 @@ class _SwitchPageState extends State<SwitchPage> {
   bool isKLight1On = false;
   bool isKLight2On = false;
 
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+
   @override
   void initState() {
     super.initState();
@@ -61,37 +64,142 @@ class _SwitchPageState extends State<SwitchPage> {
   }
 
   void _loadSwitchStates() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isR1FanOn = prefs.getBool('isR1FanOn') ?? false;
-      isR1Light1On = prefs.getBool('isR1Light1On') ?? false;
-      isR1Light2On = prefs.getBool('isR1Light2On') ?? false;
 
-      isR2FanOn = prefs.getBool('isR2FanOn') ?? false;
-      isR2Light1On = prefs.getBool('isR2Light1On') ?? false;
-      isR2Light2On = prefs.getBool('isR2Light2On') ?? false;
-      isR2Light3On = prefs.getBool('isR2Light3On') ?? false;
+    final acRef = _databaseReference.child('LivingRoom/ACStatus/isLrACOn');
+    final lightRef = _databaseReference.child('LivingRoom/Light1Status/isLrLight1On');
+    final r1FanRef = _databaseReference.child('Room1/FanStatus/isR1FanOn');
+    final r1Light1Ref = _databaseReference.child('Room1/Light1Status/isR1Light1On');
+    final r1Light2Ref = _databaseReference.child('Room1/Light2Status/isR1Light2On');
+    final r2FanRef = _databaseReference.child('Room2/FanStatus/isR2FanOn');
+    final r2Light1Ref = _databaseReference.child('Room2/Light1Status/isR2Light1On');
+    final r2Light2Ref = _databaseReference.child('Room2/Light2Status/isR2Light2On');
+    final r2Light3Ref = _databaseReference.child('Room2/Light3Status/isR2Light3On');
+    final r3FanRef = _databaseReference.child('Room3/FanStatus/isR3FanOn');
+    final r3Light1Ref = _databaseReference.child('Room3/Light1Status/isR3Light1On');
+    final r3Light2Ref = _databaseReference.child('Room3/Light2Status/isR3Light2On');
+    final outdoorLight1Ref = _databaseReference.child('Outdoor/Light1Status/isOutdoorLight1On');
+    final outdoorLight2Ref = _databaseReference.child('Outdoor/Light2Status/isOutdoorLight2On');
+    final outdoorLight3Ref = _databaseReference.child('Outdoor/Light3Status/isOutdoorLight3On');
+    final kLight1Ref = _databaseReference.child('Kitchen/Light1Status/isKLight1On');
+    final kLight2Ref = _databaseReference.child('Kitchen/Light2Status/isKLight2On');
 
-      isR3FanOn = prefs.getBool('isR3FanOn') ?? false;
-      isR3Light1On = prefs.getBool('isR3Light1On') ?? false;
-      isR3Light2On = prefs.getBool('isR3Light2On') ?? false;
+    acRef.onValue.listen((event) {
+      setState(() {
+        isLrACOn = event.snapshot.value as bool? ?? false;
+        isLivingRoomOn = isLrACOn || isLrLight1On;
+      });
+    });
 
-      isOutdoorLight1On = prefs.getBool('isOutdoorLight1On') ?? false;
-      isOutdoorLight2On = prefs.getBool('isOutdoorLight2On') ?? false;
-      isOutdoorLight3On = prefs.getBool('isOutdoorLight3On') ?? false;
+    lightRef.onValue.listen((event) {
+      setState(() {
+        isLrLight1On = event.snapshot.value as bool? ?? false;
+        isLivingRoomOn = isLrACOn || isLrLight1On;
+      });
+    });
 
-      isLrACOn = prefs.getBool('isLrACOn') ?? false;
-      isLrLight1On = prefs.getBool('isLrLight1On') ?? false;
+    r1FanRef.onValue.listen((event) {
+      setState(() {
+        isR1FanOn = event.snapshot.value as bool? ?? false;
+        isRoom1On = isR1FanOn || isR1Light1On || isR1Light2On;
+      });
+    });
 
-      isKLight1On = prefs.getBool('isKLight1On') ?? false;
-      isKLight2On = prefs.getBool('isKLight2On') ?? false;
+    r1Light1Ref.onValue.listen((event) {
+      setState(() {
+        isR1Light1On = event.snapshot.value as bool? ?? false;
+        isRoom1On = isR1FanOn || isR1Light1On || isR1Light2On;
+      });
+    });
 
-      isRoom1On = isR1FanOn || isR1Light1On || isR1Light2On;
-      isRoom2On = isR2FanOn || isR2Light1On || isR2Light2On || isR2Light3On;
-      isRoom3On = isR3FanOn || isR3Light1On || isR3Light2On;
-      isOutdoorOn = isOutdoorLight1On || isOutdoorLight2On || isOutdoorLight3On;
-      isLivingRoomOn = isLrACOn || isLrLight1On;
-      isKitchenOn = isKLight1On || isKLight2On;
+    r1Light2Ref.onValue.listen((event) {
+      setState(() {
+        isR1Light2On = event.snapshot.value as bool? ?? false;
+        isRoom1On = isR1FanOn || isR1Light1On || isR1Light2On;
+      });
+    });
+
+    r2FanRef.onValue.listen((event) {
+      setState(() {
+        isR2FanOn = event.snapshot.value as bool? ?? false;
+        isRoom2On = isR2FanOn || isR2Light1On || isR2Light2On || isR2Light3On;
+      });
+    });
+
+    r2Light1Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light1On = event.snapshot.value as bool? ?? false;
+        isRoom2On = isR2FanOn || isR2Light1On || isR2Light2On || isR2Light3On;
+      });
+    });
+
+    r2Light2Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light2On = event.snapshot.value as bool? ?? false;
+        isRoom2On = isR2FanOn || isR2Light1On || isR2Light2On || isR2Light3On;
+      });
+    });
+
+    r2Light3Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light3On = event.snapshot.value as bool? ?? false;
+        isRoom2On = isR2FanOn || isR2Light1On || isR2Light2On || isR2Light3On;
+      });
+    });
+
+    r3FanRef.onValue.listen((event) {
+      setState(() {
+        isR3FanOn = event.snapshot.value as bool? ?? false;
+        isRoom3On = isR3FanOn || isR3Light1On || isR3Light2On;
+      });
+    });
+
+    r3Light1Ref.onValue.listen((event) {
+      setState(() {
+        isR3Light1On = event.snapshot.value as bool? ?? false;
+        isRoom3On = isR3FanOn || isR3Light1On || isR3Light2On;
+      });
+    });
+
+    r3Light2Ref.onValue.listen((event) {
+      setState(() {
+        isR3Light2On = event.snapshot.value as bool? ?? false;
+        isRoom3On = isR3FanOn || isR3Light1On || isR3Light2On;
+      });
+    });
+
+    outdoorLight1Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight1On = event.snapshot.value as bool? ?? false;
+        isOutdoorOn = isOutdoorLight1On || isOutdoorLight2On || isOutdoorLight3On;
+      });
+    });
+
+    outdoorLight2Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight2On = event.snapshot.value as bool? ?? false;
+        isOutdoorOn = isOutdoorLight1On || isOutdoorLight2On || isOutdoorLight3On;
+      });
+    });
+
+    outdoorLight3Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight3On = event.snapshot.value as bool? ?? false;
+        isOutdoorOn = isOutdoorLight1On || isOutdoorLight2On || isOutdoorLight3On;
+      });
+    });
+
+    kLight1Ref.onValue.listen((event) {
+      setState(() {
+        isKLight1On = event.snapshot.value as bool? ?? false;
+        isKitchenOn = isKLight1On || isKLight2On;
+      });
+    });
+
+    kLight2Ref.onValue.listen((event) {
+      setState(() {
+        isKLight2On = event.snapshot.value as bool? ?? false;
+        isKitchenOn = isKLight1On || isKLight2On;
+      });
     });
   }
 

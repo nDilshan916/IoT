@@ -27,12 +27,33 @@ class _Room_2_PageState extends State<Room_2_Page> {
   }
 
   void _loadSwitchState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isR2FanOn = prefs.getBool('isR2FanOn') ?? false;
-      isR2Light1On = prefs.getBool('isR2Light1On') ?? false;
-      isR2Light2On = prefs.getBool('isR2Light2On') ?? false;
-      isR2Light3On = prefs.getBool('isR2Light3On') ?? false;
+    final DatabaseReference fanRef = _databaseRef.child('Room2/FanStatus/isR2FanOn');
+    final DatabaseReference light1Ref = _databaseRef.child('Room2/Light1Status/isR2Light1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Room2/Light2Status/isR2Light2On');
+    final DatabaseReference light3Ref = _databaseRef.child('Room2/Light3Status/isR2Light3On');
+
+    fanRef.onValue.listen((event) {
+      setState(() {
+        isR2FanOn = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light1Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light1On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light2Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light2On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light3Ref.onValue.listen((event) {
+      setState(() {
+        isR2Light3On = event.snapshot.value as bool? ?? false;
+      });
     });
   }
 

@@ -5,8 +5,14 @@ class DailyUsageProgress extends StatefulWidget {
   final double dailyUsage;
   final double initialUsageLimit;
 
-  const DailyUsageProgress(
-      {super.key, required this.dailyUsage, required this.initialUsageLimit});
+  DailyUsageProgress({
+    super.key,
+    required this.dailyUsage,
+    required this.initialUsageLimit,
+  }) {
+    print('DailyUsageProgress Constructor: initialUsageLimit = $initialUsageLimit');
+    print('Constructor: dailyUsage = $dailyUsage');
+  }
 
   @override
   _DailyUsageProgressState createState() => _DailyUsageProgressState();
@@ -14,42 +20,46 @@ class DailyUsageProgress extends StatefulWidget {
 
 class _DailyUsageProgressState extends State<DailyUsageProgress> {
   late double usageLimit;
+  late double dailyusage;
 
   @override
   void initState() {
     super.initState();
     usageLimit = widget.initialUsageLimit;
+    dailyusage = widget.dailyUsage;
+    print('initState: usageLimit = $usageLimit');
   }
 
   @override
   void didUpdateWidget(DailyUsageProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.dailyUsage != oldWidget.dailyUsage) {
-      // Update usage and notify if needed
+    if (widget.initialUsageLimit != oldWidget.initialUsageLimit) {
+      setState(() {
+        usageLimit = widget.initialUsageLimit;
+      });
     }
-  }
-
-  void _updateUsageLimit(double newLimit) {
-    setState(() {
-      usageLimit = newLimit;
-    });
+    if(widget.dailyUsage != oldWidget.dailyUsage){
+      setState(() {
+        dailyusage = widget.dailyUsage;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     double barWidth = 0.20;
     double setRadius = 0.65;
-    double usageWattLimit = usageLimit * 1000;
-    double dailyUsage = widget.dailyUsage;
+    double usageWattLimit = usageLimit;
+    double dUsage = dailyusage;
     Color? secondColor = Colors.grey[350];
-    double usagePercentage = dailyUsage / usageWattLimit;
+    double usagePercentage = usageWattLimit > 0 ? dUsage / usageWattLimit : 0;
     if (usagePercentage > 1) {
       usagePercentage = 1;
     }
 
-    print('usage precentage: $usagePercentage');
+    print('usage percentage: $usagePercentage');
     print('usage watt limit: $usageWattLimit');
-    print('wdt dailyUsage: $dailyUsage');
+    print('widget dailyUsage: $dUsage');
 
     return Container(
       child: Column(
@@ -142,10 +152,8 @@ class _DailyUsageProgressState extends State<DailyUsageProgress> {
               ],
             ),
           ),
-
         ],
       ),
     );
   }
 }
-

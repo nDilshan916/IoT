@@ -26,10 +26,19 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
   }
 
   void _loadSwitchState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isLrACOn = prefs.getBool('isLrACOn') ?? false;
-      isLrLight1On = prefs.getBool('isLrLight1On') ?? false;
+    final DatabaseReference acRef = _databaseReference.child('LivingRoom/ACStatus/isLrACOn');
+    final DatabaseReference lightRef = _databaseReference.child('LivingRoom/Light1Status/isLrLight1On');
+
+    acRef.onValue.listen((event) {
+      setState(() {
+        isLrACOn = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    lightRef.onValue.listen((event) {
+      setState(() {
+        isLrLight1On = event.snapshot.value as bool? ?? false;
+      });
     });
   }
 

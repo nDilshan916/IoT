@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/daily_usage_progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:iot/pages/settingPages/setLimit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
   double dailyUsage = 0.0; // This should be fetched from a database
-  late double usageLimit; // This can be user-defined or fetched from a database
+  double usageLimit = 0.0; // This can be user-defined or fetched from a database
   double monthlyUsage = 0.0; // This should be fetched from a database
   double lastMonthBill = 0.0; // This should be fetched from a database
   double reminderValue = 0.0;
@@ -32,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     initializePreferences();
     getCurrentUser();
-    fetchUsageLimit();
+    fetchUsageLimitFromDatabase();
     fetchDailyUsage();
     fetchMonthlyUsage();
     fetchLastMonthBill();
@@ -55,66 +54,91 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void fetchUsageLimit() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      usageLimit = prefs.getDouble('usageLimit') ?? 200.0; // Default value
+  void fetchUsageLimitFromDatabase() {
+    DatabaseReference databaseReference =
+    FirebaseDatabase.instance.ref('usageLimit');
+
+    databaseReference.once().then((DatabaseEvent snapshot) {
+      var limit = snapshot.snapshot.value;
+      if (limit != null) {
+        setState(() {
+          usageLimit = (limit as num).toDouble();
+        });
+        print('USAGE LIMIT: $usageLimit');
+      } else {
+        setState(() {
+          usageLimit = 200.0; // Default value if not found in database
+        });
+      }
+    }).catchError((error) {
+      print("Failed to fetch usage limit: $error");
+      setState(() {
+        usageLimit = 200.0; // Default value if error occurs
+      });
     });
   }
 
-  void fetchDailyUsage() async {
+  void fetchDailyUsage() {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref('hourlyUsage');
-    DatabaseEvent event = await databaseReference.once();
 
-    if (event.snapshot.exists) {
-      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-      DateTime now = DateTime.now();
-      String currentDay = DateFormat('yyyy-MM-dd').format(now);
+    // Use onValue listener for real-time updates
+    databaseReference.onValue.listen((event) {
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+        DateTime now = DateTime.now();
+        String currentDay = DateFormat('yyyy-MM-dd').format(now);
 
-      double dailyTotal = 0.0;
-      data.forEach((key, value) {
-        if (key.toString().startsWith(currentDay)) {
-          dailyTotal += value.toDouble();
-        }
-      });
+        double dailyTotal = 0.0;
+        data.forEach((key, value) {
+          if (key.toString().startsWith(currentDay)) {
+            dailyTotal += value.toDouble();
+          }
+        });
 
-      setState(() {
-        dailyUsage = double.parse(dailyTotal.toStringAsFixed(2));
-      });
+        setState(() {
+          dailyUsage = double.parse(dailyTotal.toStringAsFixed(2));
+        });
 
-      // Check if daily usage exceeds reminder value
-      // checkReminder(dailyTotal);
+        // Check if daily usage exceeds reminder value
+        // checkReminder(dailyTotal);
 
-    } else {
-      print('No hourly usage data available.');
-    }
+      } else {
+        print('No hourly usage data available.');
+      }
+    }, onError: (error) {
+      print("Failed to fetch daily usage: $error");
+    });
   }
 
-
-
-  void fetchMonthlyUsage() async {
+  void fetchMonthlyUsage() {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref('hourlyUsage');
-    DatabaseEvent event = await databaseReference.once();
 
-    if (event.snapshot.exists) {
-      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-      DateTime now = DateTime.now();
-      String currentMonth = DateFormat('yyyy-MM').format(now);
+    // Use onValue listener for real-time updates
+    databaseReference.onValue.listen((event) {
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+        DateTime now = DateTime.now();
+        String currentMonth = DateFormat('yyyy-MM').format(now);
 
-      double monthlyTotal = 0.0;
-      data.forEach((key, value) {
-        if (key.toString().startsWith(currentMonth)) {
-          monthlyTotal += value.toDouble();
-        }
-      });
+        double monthlyTotal = 0.0;
+        data.forEach((key, value) {
+          if (key.toString().startsWith(currentMonth)) {
+            monthlyTotal += value.toDouble();
+          }
+        });
 
-      setState(() {
-        monthlyUsage = double.parse(monthlyTotal.toStringAsFixed(2));
-      });
-    } else {
-      print('No hourly usage data available.');
-    }
+        setState(() {
+          monthlyUsage = double.parse(monthlyTotal.toStringAsFixed(2));
+        });
+
+      } else {
+        print('No hourly usage data available.');
+      }
+    }, onError: (error) {
+      print("Failed to fetch monthly usage: $error");
+    });
   }
+
 
   void fetchLastMonthBill() async {
     final prefs = await SharedPreferences.getInstance();
@@ -164,35 +188,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _navigateAndSetLimit() async {
-    final newLimit = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SetLimit(currentLimit: usageLimit),
-      ),
-    );
-    if (newLimit != null) {
-      setState(() {
-        usageLimit = newLimit;
-      });
-    }
-  }
   void fetchReminderValue() async{
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      reminderValue = prefs.getDouble('reminderValue') ?? 0.00;
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('reminderValue');
+    databaseReference.once().then((DatabaseEvent snapshot) { // Change DataSnapshot to DatabaseEvent
+      final value = snapshot.snapshot.value; // Use snapshot.snapshot.value to access data
+      if (value != null) {
+        setState(() {
+          reminderValue = (value as num).toDouble(); // Ensure the value is converted to double
+        });
+      }
+    }).catchError((error) {
+      print("Failed to load reminder value: $error");
     });
   }
-
-  // void checkReminder(double usage) {
-  //   if (reminderValue > 0 && usage >= (reminderValue / 100) * usageLimit) {
-  //     NotificationService().showNotification(
-  //       0,
-  //       'Usage Reminder',
-  //       'You have reached ${reminderValue.toStringAsFixed(0)}% of your daily usage limit.',
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -202,12 +210,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('IoT Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: _navigateAndSetLimit,
-          ),
-        ],
       ),
       body: Container(
         decoration: const BoxDecoration(

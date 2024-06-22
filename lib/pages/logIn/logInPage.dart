@@ -146,7 +146,7 @@ class _LogInPageState extends State<LogInPage> {
                               await SharedPreferences.getInstance();
                           prefs.setBool('isLoggedIn', true);
                           Navigator.pushNamed(context, HomePage.id);
-                                                } catch (e) {
+                        } catch (e) {
                           print(e);
                           Alert(
                             context: context,
@@ -220,7 +220,10 @@ class _LogInPageState extends State<LogInPage> {
 
 class signButton extends StatelessWidget {
   const signButton(
-      {super.key, required this.email, required this.password, required this.onTap});
+      {super.key,
+      required this.email,
+      required this.password,
+      required this.onTap});
 
   final String email;
   final String password;

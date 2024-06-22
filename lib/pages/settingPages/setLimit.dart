@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot/components/bottom_bar.dart';
 
 class SetLimit extends StatefulWidget {
   static const String id = "SetLimit";
-  final double currentLimit;
 
-  const SetLimit({super.key, required this.currentLimit});
+
+  const SetLimit({super.key});
 
   @override
   State<SetLimit> createState() => _SetLimitState();
@@ -24,7 +23,6 @@ class _SetLimitState extends State<SetLimit> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _loadLimit();
     _getCurrentUser();
   }
 
@@ -34,15 +32,32 @@ class _SetLimitState extends State<SetLimit> {
       setState(() {
         userId = user.uid;
       });
+      _loadLimit(); // Load limit after user is set
     }
   }
 
   Future<void> _loadLimit() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _currentLimit = prefs.getDouble('usageLimit') ?? widget.currentLimit;
-      _controller.text = '$_currentLimit';
-      curWattLimit = _currentLimit * 1000;
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('usageLimit');
+    databaseReference.once().then((DatabaseEvent event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        setState(() {
+          _currentLimit = (data as num).toDouble() / 1000;
+          _controller.text = '$_currentLimit';
+          curWattLimit = _currentLimit * 1000;
+        });
+      } else {
+        setState(() {
+          _controller.text = '$_currentLimit';
+          curWattLimit = _currentLimit * 1000;
+        });
+      }
+    }).catchError((error) {
+      print("Failed to load limit: $error");
+      setState(() {
+        _controller.text = '$_currentLimit';
+        curWattLimit = _currentLimit * 1000;
+      });
     });
   }
 
@@ -64,23 +79,18 @@ class _SetLimitState extends State<SetLimit> {
 
   void _updateCounterFromText(String value) {
     setState(() {
-      _currentLimit = double.tryParse(value) ?? widget.currentLimit;
+      curWattLimit = _currentLimit * 1000;
     });
   }
 
   Future<void> _saveLimit() async {
     // Save to Firebase
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('usageLimit');
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('usageLimit');
     databaseReference.set(curWattLimit).then((_) {
       print("Firebase: Limit saved successfully");
     }).catchError((error) {
       print("Firebase: Failed to save limit: $error");
     });
-
-    // Save to SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('usageLimit', _currentLimit);
 
     // Navigate back with new limit
     Navigator.pop(context, _currentLimit);

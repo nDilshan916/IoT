@@ -26,11 +26,26 @@ class _Room_3_PageState extends State<Room_3_Page> {
   }
 
   void _loadSwitchState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isR3FanOn = prefs.getBool('isR3FanOn') ?? false;
-      isR3Light1On = prefs.getBool('isR3Light1On') ?? false;
-      isR3Light2On = prefs.getBool('isR3Light2On') ?? false;
+    final DatabaseReference fanRef = _databaseRef.child('Room3/FanStatus/isR3FanOn');
+    final DatabaseReference light1Ref = _databaseRef.child('Room3/Light1Status/isR3Light1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Room3/Light2Status/isR3Light2On');
+
+    fanRef.onValue.listen((event) {
+      setState(() {
+        isR3FanOn = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light1Ref.onValue.listen((event) {
+      setState(() {
+        isR3Light1On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light2Ref.onValue.listen((event) {
+      setState(() {
+        isR3Light2On = event.snapshot.value as bool? ?? false;
+      });
     });
   }
 

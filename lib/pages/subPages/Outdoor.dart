@@ -26,11 +26,26 @@ class _OutdoorState extends State<Outdoor> {
   }
 
   void _loadSwitchState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isOutdoorLight1On = prefs.getBool('isOutdoorLight1On') ?? false;
-      isOutdoorLight2On = prefs.getBool('isOutdoorLight2On') ?? false;
-      isOutdoorLight3On = prefs.getBool('isOutdoorLight3On') ?? false;
+    final DatabaseReference light1Ref = _databaseRef.child('Outdoor/Light1Status/isOutdoorLight1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Outdoor/Light2Status/isOutdoorLight2On');
+    final DatabaseReference light3Ref = _databaseRef.child('Outdoor/Light3Status/isOutdoorLight3On');
+
+    light1Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight1On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light2Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight2On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light3Ref.onValue.listen((event) {
+      setState(() {
+        isOutdoorLight3On = event.snapshot.value as bool? ?? false;
+      });
     });
   }
 

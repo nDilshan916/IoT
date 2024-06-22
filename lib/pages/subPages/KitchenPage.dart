@@ -25,10 +25,19 @@ class _KitchenPage extends State<KitchenPage> {
   }
 
   void _loadSwitchState() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isKLight1On = prefs.getBool('isKLight1On') ?? false;
-      isKLight2On = prefs.getBool('isKLight2On') ?? false;
+    final DatabaseReference light1Ref = _databaseRef.child('Kitchen/Light1Status/isKLight1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Kitchen/Light2Status/isKLight2On');
+
+    light1Ref.onValue.listen((event) {
+      setState(() {
+        isKLight1On = event.snapshot.value as bool? ?? false;
+      });
+    });
+
+    light2Ref.onValue.listen((event) {
+      setState(() {
+        isKLight2On = event.snapshot.value as bool? ?? false;
+      });
     });
   }
 
