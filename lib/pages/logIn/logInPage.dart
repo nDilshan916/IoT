@@ -44,14 +44,14 @@ class _LogInPageState extends State<LogInPage> {
               child: Text(
                 'Hello\nSign in!',
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 35,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 200.0),
+            padding: const EdgeInsets.only(top: 250.0),
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -117,19 +117,73 @@ class _LogInPageState extends State<LogInPage> {
                         ),
                       ),
                     ),
-                    const Align(
+                    SizedBox(
+                      height: 40,
+                    ),
+                    // Inside your ListView children, after the password TextField and before the signButton
+                    Align(
                       alignment: Alignment.centerRight,
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Color(0xff281537),
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (email.isNotEmpty) {
+                            try {
+                              await _auth.sendPasswordResetEmail(email: email);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Password reset email sent. Check your email.'),
+                                ),
+                              );
+                            } catch (e) {
+                              print('Failed to send password reset email: $e');
+                              Alert(
+                                context: context,
+                                type: AlertType.error,
+                                title: "Error",
+                                desc: "Failed to send password reset email. Please try again later.",
+                                buttons: [
+                                  DialogButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    width: 120,
+                                    child: Text(
+                                      "Close",
+                                      style: TextStyle(color: Colors.white, fontSize: 20),
+                                    ),
+                                  )
+                                ],
+                              ).show();
+                            }
+                          } else {
+                            Alert(
+                              context: context,
+                              type: AlertType.warning,
+                              title: "Warning",
+                              desc: "Please enter your email address first.",
+                              buttons: [
+                                DialogButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                  child: Text(
+                                    "Close",
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                )
+                              ],
+                            ).show();
+                          }
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: Color(0xff281537),
+                          ),
                         ),
                       ),
                     ),
+
                     const SizedBox(
-                      height: 70,
+                      height: 60,
                     ),
                     signButton(
                       email: email,

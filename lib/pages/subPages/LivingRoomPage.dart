@@ -3,6 +3,7 @@ import 'package:iot/components/bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../components/customSwitch.dart';
 import '../../components/reusable_card.dart';
 
 class LivingRoomPage extends StatefulWidget {
@@ -26,8 +27,8 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
   }
 
   void _loadSwitchState() async {
-    final DatabaseReference acRef = _databaseReference.child('LivingRoom/ACStatus/isLrACOn');
-    final DatabaseReference lightRef = _databaseReference.child('LivingRoom/Light1Status/isLrLight1On');
+    final DatabaseReference acRef = _databaseReference.child('Components/LivingRoom/AC/isLrACOn');
+    final DatabaseReference lightRef = _databaseReference.child('Components/LivingRoom/Light 1/isLrLight1On');
 
     acRef.onValue.listen((event) {
       setState(() {
@@ -51,11 +52,11 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
 
   Future<void> _updateRealtimeDatabase(String key, bool status) async {
     if (key == 'isLrACOn') {
-      await _databaseReference.child('LivingRoom/ACStatus').set({
+      await _databaseReference.child('Components/LivingRoom/AC').set({
         'isLrACOn': status,
       });
     } else if (key == 'isLrLight1On') {
-      await _databaseReference.child('LivingRoom/Light1Status').set({
+      await _databaseReference.child('Components/LivingRoom/Light 1').set({
         'isLrLight1On': status,
       });
     }
@@ -68,67 +69,80 @@ class _LivingRoomPageState extends State<LivingRoomPage> {
         automaticallyImplyLeading: true,
         title: const Text('Living Room'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 20.0,
+            ),
+            Expanded(
+              child: SizedBox(
+                width: 300.0,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      SwitchCards(
-                        switchImage: 'images/AC_switch.png',
-                        switchName: 'AC',
-                        isSwitchOn: isLrACOn,
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/AC_switch.png',
+                            switchName: 'AC',
+                            isSwitchOn: isLrACOn,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isLrACOn = !isLrACOn;
+                                  _saveSwitchState('isLrACOn', isLrACOn);
+                                });
+                              },
+                            child: CustomSwitch(isSwitched: isLrACOn,),
+                          ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isLrACOn,
-                          onChanged: (value) {
-                            setState(() {
-                              isLrACOn = value;
-                              _saveSwitchState('isLrACOn', isLrACOn);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 1',
+                            isSwitchOn: isLrLight1On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isLrLight1On = !isLrLight1On;
+                                  _saveSwitchState('isLrLight1On', isLrLight1On);
+                                });
+                              },
+                            child: CustomSwitch(isSwitched: isLrLight1On,),
+                          ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 1',
-                        isSwitchOn: isLrLight1On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isLrLight1On,
-                          onChanged: (value) {
-                            setState(() {
-                              isLrLight1On = value;
-                              _saveSwitchState('isLrLight1On', isLrLight1On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-          const bottomBar(currentPageId: LivingRoomPage.id),
-        ],
+            const bottomBar(currentPageId: LivingRoomPage.id),
+          ],
+        ),
       ),
     );
   }

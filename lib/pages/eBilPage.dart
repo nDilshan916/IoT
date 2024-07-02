@@ -22,6 +22,15 @@ class _eBilState extends State<eBil> {
   final TextEditingController _unitRateSController = TextEditingController();
   final TextEditingController _totalConsumedController = TextEditingController();
 
+  final FocusNode _billingStartFocusNode = FocusNode();
+  final FocusNode _billingEndFocusNode = FocusNode();
+  final FocusNode _fixedChargeFocusNode = FocusNode();
+  final FocusNode _unitRateXFocusNode = FocusNode();
+  final FocusNode _unitRateYFocusNode = FocusNode();
+  final FocusNode _unitRateZFocusNode = FocusNode();
+  final FocusNode _unitRateSFocusNode = FocusNode();
+  final FocusNode _totalConsumedFocusNode = FocusNode();
+
   String _result = '';
 
   @override
@@ -44,6 +53,14 @@ class _eBilState extends State<eBil> {
     _unitRateZController.dispose();
     _unitRateSController.dispose();
     _totalConsumedController.dispose();
+    _billingStartFocusNode.dispose();
+    _billingEndFocusNode.dispose();
+    _fixedChargeFocusNode.dispose();
+    _unitRateXFocusNode.dispose();
+    _unitRateYFocusNode.dispose();
+    _unitRateZFocusNode.dispose();
+    _unitRateSFocusNode.dispose();
+    _totalConsumedFocusNode.dispose();
     super.dispose();
   }
 
@@ -73,7 +90,7 @@ class _eBilState extends State<eBil> {
     if (startDate.isNotEmpty && endDate.isNotEmpty) {
       try {
         final totalConsumedWh = await fetchHourlyUsageData(startDate, endDate);
-        final totalConsumedKWh = totalConsumedWh / 1000.0;
+        final totalConsumedKWh = totalConsumedWh;
         setState(() {
           _totalConsumedController.text = totalConsumedKWh.toStringAsFixed(2);
         });
@@ -146,126 +163,205 @@ class _eBilState extends State<eBil> {
         automaticallyImplyLeading: true,
         title: const Text('E-Bill'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _billingStartController,
-                decoration: const InputDecoration(
-                  labelText: 'Billing Start Date (YYYY/MM/DD)',
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                TextFormField(
+                  controller: _billingStartController,
+                  focusNode: _billingStartFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Billing Start Date (YYYY-MM-DD)',
+                    errorStyle: TextStyle(
+                      color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the billing start date';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the billing start date';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _billingEndController,
-                decoration: const InputDecoration(
-                  labelText: 'Billing End Date (YYYY/MM/DD)',
+                TextFormField(
+                  controller: _billingEndController,
+                  focusNode: _billingEndFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Billing End Date (YYYY-MM-DD)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the billing end date';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the billing end date';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _fixedChargeController,
-                decoration: const InputDecoration(
-                  labelText: 'Fixed Charge (Rs.)',
+                TextFormField(
+                  controller: _fixedChargeController,
+                  focusNode: _fixedChargeFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Fixed Charge (Rs.)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the fixed charge';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the fixed charge';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _unitRateXController,
-                decoration: const InputDecoration(
-                  labelText: 'Unit Rate (1-31)',
+                TextFormField(
+                  controller: _unitRateXController,
+                  focusNode: _unitRateXFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Unit Rate (1-31)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the unit rate for 1-31';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the unit rate for 1-31';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _unitRateYController,
-                decoration: const InputDecoration(
-                  labelText: 'Unit Rate (32-62)',
+                TextFormField(
+                  controller: _unitRateYController,
+                  focusNode: _unitRateYFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Unit Rate (32-62)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the unit rate for 32-62';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the unit rate for 32-62';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _unitRateZController,
-                decoration: const InputDecoration(
-                  labelText: 'Unit Rate (63-93)',
+                TextFormField(
+                  controller: _unitRateZController,
+                  focusNode: _unitRateZFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Unit Rate (63-93)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the unit rate for 63-93';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the unit rate for 63-93';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _unitRateSController,
-                decoration: const InputDecoration(
-                  labelText: 'Unit Rate (93+)',
+                TextFormField(
+                  controller: _unitRateSController,
+                  focusNode: _unitRateSFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Unit Rate (93+)',
+                    errorStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                    labelStyle: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the unit rate for 93+';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the unit rate for 93+';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _totalConsumedController,
-                decoration: const InputDecoration(
-                  labelText: 'Total Consumed Units (kWh)',
+                TextFormField(
+                  controller: _totalConsumedController,
+                  focusNode: _totalConsumedFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Total Consumed Units (kWh)',
+                      errorStyle: TextStyle(
+                          color: Colors.white
+                      ),
+                      labelStyle: TextStyle(
+                          color: Colors.white
+                      ),
+                  ),
+                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the total consumed units';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the total consumed units';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _calculateTotalAmount,
-                child: const Text('Calculate E-Bill'),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                _result,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _calculateTotalAmount,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey[900],
+                  ),
+                  child: const Text('Calculate E-Bill',style: TextStyle(color: Colors.white, fontSize: 20),),
+                ),
+                const SizedBox(height: 60),
+                Center(
+                  child: Text(
+                    _result,
+                    style: const TextStyle(color: Colors.white70, fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

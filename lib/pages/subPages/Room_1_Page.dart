@@ -4,6 +4,8 @@ import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../components/customSwitch.dart';
+
 class Room_1_Page extends StatefulWidget {
   static const String id = 'Room1Page';
 
@@ -26,9 +28,9 @@ class _Room_1_PageState extends State<Room_1_Page> {
   }
 
   void _loadSwitchState() async {
-    final DatabaseReference fanRef = _databaseRef.child('Room1/FanStatus/isR1FanOn');
-    final DatabaseReference light1Ref = _databaseRef.child('Room1/Light1Status/isR1Light1On');
-    final DatabaseReference light2Ref = _databaseRef.child('Room1/Light2Status/isR1Light2On');
+    final DatabaseReference fanRef = _databaseRef.child('Components/Room 1/Fan/isR1FanOn');
+    final DatabaseReference light1Ref = _databaseRef.child('Components/Room 1/Light 1/isR1Light1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Components/Room 1/Light 2/isR1Light2On');
 
     fanRef.onValue.listen((event) {
       setState(() {
@@ -57,15 +59,15 @@ class _Room_1_PageState extends State<Room_1_Page> {
 
   Future<void> _updateTheRealtimeDatabase(String key, bool status) async {
     if (key == 'isR1FanOn') {
-      await _databaseRef.child('Room1').child('FanStatus').set({
+      await _databaseRef.child('Components/Room 1').child('Fan').set({
         'isR1FanOn': status,
       });
     } else if (key == 'isR1Light1On') {
-      await _databaseRef.child('Room1').child('Light1Status').set({
+      await _databaseRef.child('Components/Room 1').child('Light 1').set({
         'isR1Light1On': status,
       });
     } else if (key == 'isR1Light2On') {
-      await _databaseRef.child('Room1').child('Light2Status').set({
+      await _databaseRef.child('Components/Room 1').child('Light 2').set({
         'isR1Light2On': status,
       });
     }
@@ -78,91 +80,105 @@ class _Room_1_PageState extends State<Room_1_Page> {
         automaticallyImplyLeading: true,
         title: const Text('Room 1'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: 300,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      SwitchCards(
-                        switchImage: 'images/fan_switch.png',
-                        switchName: 'Fan',
-                        isSwitchOn: isR1FanOn,
+                      const SizedBox(
+                        height: 30,
                       ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isR1FanOn,
-                          onChanged: (value) {
-                            setState(() {
-                              isR1FanOn = value;
-                              _saveSwitchState('isR1FanOn', isR1FanOn);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/fan_switch.png',
+                            switchName: 'Fan',
+                            isSwitchOn: isR1FanOn,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isR1FanOn = !isR1FanOn;
+                                  _saveSwitchState('isR1FanOn', isR1FanOn);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isR1FanOn,),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 1',
+                            isSwitchOn: isR1Light1On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isR1Light1On = !isR1Light1On;
+                                  _saveSwitchState('isR1Light1On', isR1Light1On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isR1Light1On,),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 2',
+                            isSwitchOn: isR1Light2On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isR1Light2On = !isR1Light2On;
+                                  _saveSwitchState('isR1Light2On', isR1Light2On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isR1Light2On,),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 1',
-                        isSwitchOn: isR1Light1On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isR1Light1On,
-                          onChanged: (value) {
-                            setState(() {
-                              isR1Light1On = value;
-                              _saveSwitchState('isR1Light1On', isR1Light1On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 2',
-                        isSwitchOn: isR1Light2On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isR1Light2On,
-                          onChanged: (value) {
-                            setState(() {
-                              isR1Light2On = value;
-                              _saveSwitchState('isR1Light2On', isR1Light2On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-          const bottomBar(currentPageId: Room_1_Page.id),
-        ],
+            const bottomBar(currentPageId: Room_1_Page.id),
+          ],
+        ),
       ),
     );
   }

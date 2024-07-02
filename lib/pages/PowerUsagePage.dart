@@ -37,51 +37,60 @@ class _PowerUsagePageState extends State<PowerUsagePage>
         automaticallyImplyLeading: false,
         title: const Text('Power Usage'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TabBar(
-            controller: _tabController,
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.black,
-            tabs: const [
-              Tab(text: 'D'),
-              Tab(text: 'W'),
-              Tab(text: 'M'),
-              Tab(text: 'Y'),
-            ],
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
           ),
-          Expanded(
-            child: TabBarView(
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TabBar(
               controller: _tabController,
-              children: const [
-                PowerUsageView(viewType: 'Daily'),
-                PowerUsageView(viewType: 'Weekly'),
-                PowerUsageView(viewType: 'Monthly'),
-                PowerUsageView(viewType: 'Yearly'),
+              labelColor: Colors.blue,
+              unselectedLabelColor: Colors.white,
+              tabs: const [
+                Tab(text: 'D'),
+                Tab(text: 'W'),
+                Tab(text: 'M'),
+                Tab(text: 'Y'),
               ],
             ),
-          ),
-          const SizedBox(height: 20.0),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 45.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, eBil.id);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-              ),
-              child: const Text(
-                'Get E-bill',
-                style: TextStyle(fontSize: 15.0, color: Colors.white),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  PowerUsageView(viewType: 'Today'),
+                  PowerUsageView(viewType: 'This Week'),
+                  PowerUsageView(viewType: 'This Month'),
+                  PowerUsageView(viewType: 'This Year'),
+                ],
               ),
             ),
-          ),
-          const bottomBar(currentPageId: PowerUsagePage.id),
-        ],
+            const SizedBox(height: 20.0),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 15.0, horizontal: 45.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, eBil.id);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueGrey[900],
+                ),
+                child: const Text(
+                  'Get E-bill',
+                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                ),
+              ),
+            ),
+            SizedBox(height: 10,),
+            const bottomBar(currentPageId: PowerUsagePage.id),
+          ],
+        ),
       ),
     );
   }
@@ -119,11 +128,11 @@ class PowerUsageView extends StatelessWidget {
             dataSnapshot.value as Map<dynamic, dynamic>;
 
         List<_UsageData> chartData;
-        if (viewType == 'Daily') {
+        if (viewType == 'Today') {
           chartData = _getDailyData(usageData);
-        } else if (viewType == 'Weekly') {
+        } else if (viewType == 'This Week') {
           chartData = _getWeeklyData(usageData);
-        } else if (viewType == 'Monthly') {
+        } else if (viewType == 'This Month') {
           chartData = _getMonthlyData(usageData);
         } else {
           chartData = _getYearlyData(usageData);
@@ -136,9 +145,28 @@ class PowerUsageView extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: SfCartesianChart(
-            primaryXAxis: const CategoryAxis(),
-            title: ChartTitle(text: 'Power Usage - $viewType'),
-            trackballBehavior: TrackballBehavior(enable: true),
+            plotAreaBorderColor: Colors.transparent,
+            primaryXAxis: CategoryAxis(
+              axisLine: const AxisLine(color: Colors.white),
+              labelStyle: const TextStyle(color: Colors.white),
+              majorTickLines: const MajorTickLines(color: Colors.transparent),
+              majorGridLines: const MajorGridLines(color: Colors.transparent),
+            ),
+            primaryYAxis: NumericAxis(
+              title: AxisTitle(text: 'Usage (kWh)',textStyle: TextStyle(color: Colors.white)),
+              axisLine: const AxisLine(color: Colors.white),
+              labelStyle: const TextStyle(color: Colors.white),
+              majorTickLines: const MajorTickLines(color: Colors.transparent),
+              majorGridLines: const MajorGridLines(color: Colors.transparent),
+            ),
+            title: ChartTitle(text: ' $viewType',
+              textStyle: TextStyle(
+                color: Colors.white
+              )
+            ),
+            trackballBehavior: TrackballBehavior(
+              enable: true,
+            ),
             tooltipBehavior: TooltipBehavior(
               enable: true,
             ),
@@ -148,8 +176,10 @@ class PowerUsageView extends StatelessWidget {
                 xValueMapper: (_UsageData data, _) => data.time,
                 yValueMapper: (_UsageData data, _) => data.usage,
                 name: 'Usage',
-                borderColor: Colors.blueAccent,
-                color: const Color.fromRGBO(146, 200, 244, 0.8745098039215686),
+                // borderColor: Colors.blueAccent,
+                // color: const Color.fromRGBO(146, 200, 244, 0.8745098039215686),
+                borderColor: Colors.red,
+                color: Color.fromRGBO(244, 53, 53, 0.7),
               ),
             ],
           ),

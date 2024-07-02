@@ -36,12 +36,16 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   void _loadReminder() {
-    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('reminderValue');
-    databaseReference.once().then((DatabaseEvent snapshot) { // Change DataSnapshot to DatabaseEvent
-      final value = snapshot.snapshot.value; // Use snapshot.snapshot.value to access data
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('reminderValue');
+    databaseReference.once().then((DatabaseEvent snapshot) {
+      // Change DataSnapshot to DatabaseEvent
+      final value =
+          snapshot.snapshot.value; // Use snapshot.snapshot.value to access data
       if (value != null) {
         setState(() {
-          _reminderValue = (value as num).toDouble(); // Ensure the value is converted to double
+          _reminderValue = (value as num)
+              .toDouble(); // Ensure the value is converted to double
         });
       }
     }).catchError((error) {
@@ -49,10 +53,10 @@ class _ReminderPageState extends State<ReminderPage> {
     });
   }
 
-
   void _saveReminder(double value) async {
     // Save to Firebase
-    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('reminderValue');
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('reminderValue');
     databaseReference.set(value).then((_) {
       print("Firebase: Reminder saved successfully");
     }).catchError((error) {
@@ -79,36 +83,67 @@ class _ReminderPageState extends State<ReminderPage> {
       appBar: AppBar(
         title: const Text('Set Reminder'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 200.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Slider(
-                  value: _reminderValue,
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: _reminderValue.round().toString(),
-                  onChanged: (double value) {
-                    setState(() {
-                      _reminderValue = value;
-                    });
-                  },
-                ),
-                Text('Set reminder at ${_reminderValue.toStringAsFixed(0)}% usage'),
-                ElevatedButton(
-                  onPressed: _setReminder,
-                  child: const Text('Set Reminder'),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'images/background.png'), // Replace with your image path
+            fit: BoxFit.cover,
           ),
-          const bottomBar(currentPageId: ReminderPage.id)
-        ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 80,
+            ),
+            SizedBox(
+              height: 400,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(70)),
+                margin: EdgeInsets.zero,
+                color: Colors.blueGrey[900],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Slider(
+                      value: _reminderValue,
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      label: _reminderValue.round().toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _reminderValue = value;
+                        });
+                      },
+                    ),
+                    Text(
+                        'Set reminder at ${_reminderValue.toStringAsFixed(0)}% usage',
+                    style: TextStyle(color: Colors.white,fontSize: 22, fontWeight: FontWeight.bold),),
+                    SizedBox(height: 20,),
+                    SizedBox(
+                      width: 200,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              WidgetStatePropertyAll(Colors.red[900]),
+                        ),
+                        onPressed: _setReminder,
+                        child: const Text(
+                          'Set Reminder',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const bottomBar(currentPageId: ReminderPage.id)
+          ],
+        ),
       ),
     );
   }

@@ -26,6 +26,8 @@ class NotificationService {
       badge: true,
       sound: true,
     );
+    final fCMToken = await _firebaseMessaging.getToken();
+    print("Token: $fCMToken");
   }
 
   void _requestNotificationPermissions() async {

@@ -4,6 +4,8 @@ import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../components/customSwitch.dart';
+
 class Outdoor extends StatefulWidget {
   static const String id = 'Outdoor';
 
@@ -26,9 +28,9 @@ class _OutdoorState extends State<Outdoor> {
   }
 
   void _loadSwitchState() async {
-    final DatabaseReference light1Ref = _databaseRef.child('Outdoor/Light1Status/isOutdoorLight1On');
-    final DatabaseReference light2Ref = _databaseRef.child('Outdoor/Light2Status/isOutdoorLight2On');
-    final DatabaseReference light3Ref = _databaseRef.child('Outdoor/Light3Status/isOutdoorLight3On');
+    final DatabaseReference light1Ref = _databaseRef.child('Components/Outdoor/Light 1/isOutdoorLight1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Components/Outdoor/Light 2/isOutdoorLight2On');
+    final DatabaseReference light3Ref = _databaseRef.child('Components/Outdoor/Light 3/isOutdoorLight3On');
 
     light1Ref.onValue.listen((event) {
       setState(() {
@@ -57,15 +59,15 @@ class _OutdoorState extends State<Outdoor> {
 
   Future<void> _updateTheRealtimeDatabase(String key, bool status) async {
     if (key == 'isOutdoorLight1On') {
-      await _databaseRef.child('Outdoor').child('Light1Status').set({
+      await _databaseRef.child('Components/Outdoor').child('Light 1').set({
         'isOutdoorLight1On': status,
       });
     } else if (key == 'isOutdoorLight2On') {
-      await _databaseRef.child('Outdoor').child('Light2Status').set({
+      await _databaseRef.child('Components/Outdoor').child('Light 2').set({
         'isOutdoorLight2On': status,
       });
     } else if (key == 'isOutdoorLight3On') {
-      await _databaseRef.child('Outdoor').child('Light3Status').set({
+      await _databaseRef.child('Components/Outdoor').child('Light 3').set({
         'isOutdoorLight3On': status,
       });
     }
@@ -78,91 +80,105 @@ class _OutdoorState extends State<Outdoor> {
         automaticallyImplyLeading: true,
         title: const Text('Outdoor'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: 300,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 1',
-                        isSwitchOn: isOutdoorLight1On,
+                      const SizedBox(
+                        height: 30,
                       ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isOutdoorLight1On,
-                          onChanged: (value) {
-                            setState(() {
-                              isOutdoorLight1On = value;
-                              _saveSwitchState('isOutdoorLight1On', isOutdoorLight1On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 1',
+                            isSwitchOn: isOutdoorLight1On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isOutdoorLight1On = !isOutdoorLight1On;
+                                  _saveSwitchState('isOutdoorLight1On', isOutdoorLight1On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isOutdoorLight1On,),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 2',
+                            isSwitchOn: isOutdoorLight2On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isOutdoorLight2On = !isOutdoorLight2On;
+                                  _saveSwitchState('isOutdoorLight2On', isOutdoorLight2On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isOutdoorLight2On,),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 3',
+                            isSwitchOn: isOutdoorLight3On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isOutdoorLight3On = !isOutdoorLight3On;
+                                  _saveSwitchState('isOutdoorLight3On', isOutdoorLight3On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isOutdoorLight3On,),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 2',
-                        isSwitchOn: isOutdoorLight2On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isOutdoorLight2On,
-                          onChanged: (value) {
-                            setState(() {
-                              isOutdoorLight2On = value;
-                              _saveSwitchState('isOutdoorLight2On', isOutdoorLight2On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 3',
-                        isSwitchOn: isOutdoorLight3On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isOutdoorLight3On,
-                          onChanged: (value) {
-                            setState(() {
-                              isOutdoorLight3On = value;
-                              _saveSwitchState('isOutdoorLight3On', isOutdoorLight3On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-          const bottomBar(currentPageId: Outdoor.id),
-        ],
+            const bottomBar(currentPageId: Outdoor.id),
+          ],
+        ),
       ),
     );
   }

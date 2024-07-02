@@ -10,6 +10,8 @@ import 'package:iot/pages/subPages/KitchenPage.dart';
 import 'package:iot/pages/subPages/LivingRoomPage.dart';
 import 'package:iot/pages/subPages/Room_1_Page.dart';
 
+import '../main.dart';
+
 class SwitchPage extends StatefulWidget {
   static const String id = 'SwitchPage';
 
@@ -65,23 +67,23 @@ class _SwitchPageState extends State<SwitchPage> {
 
   void _loadSwitchStates() async {
 
-    final acRef = _databaseReference.child('LivingRoom/ACStatus/isLrACOn');
-    final lightRef = _databaseReference.child('LivingRoom/Light1Status/isLrLight1On');
-    final r1FanRef = _databaseReference.child('Room1/FanStatus/isR1FanOn');
-    final r1Light1Ref = _databaseReference.child('Room1/Light1Status/isR1Light1On');
-    final r1Light2Ref = _databaseReference.child('Room1/Light2Status/isR1Light2On');
-    final r2FanRef = _databaseReference.child('Room2/FanStatus/isR2FanOn');
-    final r2Light1Ref = _databaseReference.child('Room2/Light1Status/isR2Light1On');
-    final r2Light2Ref = _databaseReference.child('Room2/Light2Status/isR2Light2On');
-    final r2Light3Ref = _databaseReference.child('Room2/Light3Status/isR2Light3On');
-    final r3FanRef = _databaseReference.child('Room3/FanStatus/isR3FanOn');
-    final r3Light1Ref = _databaseReference.child('Room3/Light1Status/isR3Light1On');
-    final r3Light2Ref = _databaseReference.child('Room3/Light2Status/isR3Light2On');
-    final outdoorLight1Ref = _databaseReference.child('Outdoor/Light1Status/isOutdoorLight1On');
-    final outdoorLight2Ref = _databaseReference.child('Outdoor/Light2Status/isOutdoorLight2On');
-    final outdoorLight3Ref = _databaseReference.child('Outdoor/Light3Status/isOutdoorLight3On');
-    final kLight1Ref = _databaseReference.child('Kitchen/Light1Status/isKLight1On');
-    final kLight2Ref = _databaseReference.child('Kitchen/Light2Status/isKLight2On');
+    final acRef = _databaseReference.child('Components/LivingRoom/AC/isLrACOn');
+    final lightRef = _databaseReference.child('Components/LivingRoom/Light 1/isLrLight1On');
+    final r1FanRef = _databaseReference.child('Components/Room 1/Fan/isR1FanOn');
+    final r1Light1Ref = _databaseReference.child('Components/Room 1/Light 1/isR1Light1On');
+    final r1Light2Ref = _databaseReference.child('Components/Room 1/Light 2/isR1Light2On');
+    final r2FanRef = _databaseReference.child('Components/Room 2/Fan/isR2FanOn');
+    final r2Light1Ref = _databaseReference.child('Components/Room 2/Light 1/isR2Light1On');
+    final r2Light2Ref = _databaseReference.child('Components/Room 2/Light 2/isR2Light2On');
+    final r2Light3Ref = _databaseReference.child('Components/Room 2/Light 3/isR2Light3On');
+    final r3FanRef = _databaseReference.child('Components/Room 3/Fan/isR3FanOn');
+    final r3Light1Ref = _databaseReference.child('Components/Room 3/Light 1/isR3Light1On');
+    final r3Light2Ref = _databaseReference.child('Components/Room 3/Light 2/isR3Light2On');
+    final outdoorLight1Ref = _databaseReference.child('Components/Outdoor/Light 1/isOutdoorLight1On');
+    final outdoorLight2Ref = _databaseReference.child('Components/Outdoor/Light 2/isOutdoorLight2On');
+    final outdoorLight3Ref = _databaseReference.child('Components/Outdoor/Light 3/isOutdoorLight3On');
+    final kLight1Ref = _databaseReference.child('Components/Kitchen/Light 1/isKLight1On');
+    final kLight2Ref = _databaseReference.child('Components/Kitchen/Light 2/isKLight2On');
 
     acRef.onValue.listen((event) {
       setState(() {
@@ -205,12 +207,13 @@ class _SwitchPageState extends State<SwitchPage> {
 
   @override
   Widget build(BuildContext context) {
+    double switchGap = 20.0;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Switch Page'),
+        title: const Text('Switches'),
       ),
-      body: Container(
+      body: withDraggableFAB(Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/background.png'),
@@ -220,123 +223,130 @@ class _SwitchPageState extends State<SwitchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, LivingRoomPage.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/living room switch.png',
-                            switchName: 'Living Room',
-                            isSwitchOn:
-                                isLivingRoomOn, // Assuming false for demo
-                          ),
-                        ),
+                      const SizedBox(
+                        height: 50,
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, Room_1_Page.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/room switch.png',
-                            switchName: 'Room 1',
-                            isSwitchOn: isRoom1On,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, LivingRoomPage.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/living room switch.png',
+                                switchName: 'Living Room',
+                                isSwitchOn:
+                                    isLivingRoomOn, // Assuming false for demo
+                              ),
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Room_1_Page.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/room switch.png',
+                                switchName: 'Room 1',
+                                isSwitchOn: isRoom1On,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: switchGap),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Room_2_Page.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/room switch.png',
+                                switchName: 'Room 2',
+                                isSwitchOn: isRoom2On, // Assuming false for demo
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Room_3_Page.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/room switch.png',
+                                switchName: 'Room 3',
+                                isSwitchOn: isRoom3On, // Assuming false for demo
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: switchGap),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, KitchenPage.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/kitchen button.png',
+                                switchName: 'Kitchen',
+                                isSwitchOn: isKitchenOn, // Assuming false for demo
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Outdoor.id)
+                                    .then((_) {
+                                  _loadSwitchStates(); // Reload switch states when coming back
+                                });
+                              },
+                              child: SwitchCards(
+                                switchImage: 'images/outdoor.png',
+                                switchName: 'Outdoor',
+                                isSwitchOn: isOutdoorOn, // Assuming false for demo
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, Room_2_Page.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/room switch.png',
-                            switchName: 'Room 2',
-                            isSwitchOn: isRoom2On, // Assuming false for demo
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, Room_3_Page.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/room switch.png',
-                            switchName: 'Room 3',
-                            isSwitchOn: isRoom3On, // Assuming false for demo
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, KitchenPage.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/kitchen button.png',
-                            switchName: 'Kitchen',
-                            isSwitchOn: isKitchenOn, // Assuming false for demo
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, Outdoor.id)
-                                .then((_) {
-                              _loadSwitchStates(); // Reload switch states when coming back
-                            });
-                          },
-                          child: SwitchCards(
-                            switchImage: 'images/room switch.png',
-                            switchName: 'Outdoor',
-                            isSwitchOn: isOutdoorOn, // Assuming false for demo
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
             const bottomBar(currentPageId: SwitchPage.id),
           ],
         ),
-      ),
+      )),
     );
   }
 }

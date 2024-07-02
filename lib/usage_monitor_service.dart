@@ -14,7 +14,6 @@ class UsageMonitorService {
   void _monitorUsage() {
     hourlyUsageRef.onValue.listen((event) async {
       if (event.snapshot.value != null) {
-
         Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
         DateTime now = DateTime.now();
         String currentDay = DateFormat('yyyy-MM-dd').format(now);
@@ -22,42 +21,37 @@ class UsageMonitorService {
         double dailyTotal = 0.0;
         data.forEach((key, value) {
           if (key.toString().startsWith(currentDay)) {
-            dailyTotal += value.toDouble();
+            dailyTotal += _toDouble(value);
           }
         });
-
-        // setState(() {
-        //   dailyUsage = double.parse(dailyTotal.toStringAsFixed(2));
-        // });
 
         DataSnapshot limitSnapshot = await usageLimitRef.get();
         if (limitSnapshot.exists) {
           double usageLimit = _toDouble(limitSnapshot.value);
-          print('moniter usage limit: $usageLimit');
-          print('monitor total usage: $dailyTotal');
-
-          if (dailyTotal >= usageLimit) {
-            NotificationService().showNotification(
-              0,
-              'Usage Limit Reached',
-              'You have reached your daily usage limit of ${usageLimit.toStringAsFixed(2)} kWh.',
-            );
-          }
-
           DataSnapshot reminderSnapshot = await reminderValueRef.get();
           if (reminderSnapshot.exists) {
             double reminderValue = _toDouble(reminderSnapshot.value);
-            print('monitor reminder: $reminderValue');
-
-            if (reminderValue > 0 && dailyTotal >= (reminderValue / 100) * usageLimit) {
+            if (dailyTotal >= usageLimit) {
+              NotificationService().showNotification(
+                0,
+                'Usage Limit Reached',
+                'You have reached your daily usage limit of ${usageLimit.toStringAsFixed(0)} units.',
+              );
+            } else if (reminderValue > 0 && dailyTotal >= (reminderValue / 100) * usageLimit) {
               NotificationService().showNotification(
                 0,
                 'Usage Reminder',
                 'You have reached ${reminderValue.toStringAsFixed(0)}% of your daily usage limit.',
               );
             }
+          } else {
+            print('No reminder value data available.');
           }
+        } else {
+          print('No usage limit data available.');
         }
+      } else {
+        print('No hourly usage data available.');
       }
     });
   }
@@ -101,6 +95,13 @@ Future<void> checkReminderInBackground() async {
 
       if (limitSnapshot.exists) {
         double usageLimit = limitSnapshot.value as double;
+        if (dailyTotal >= usageLimit) {
+          NotificationService().showNotification(
+            0,
+            'Usage Limit Reached',
+            'You have reached your daily usage limit of ${usageLimit.toStringAsFixed(2)} kWh.',
+          );
+        }
 
         if (reminderValue > 0 && dailyTotal >= (reminderValue / 100) * usageLimit) {
           NotificationService().showNotification(

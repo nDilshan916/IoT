@@ -4,6 +4,8 @@ import 'package:iot/components/bottom_bar.dart';
 import 'package:iot/components/reusable_card.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../components/customSwitch.dart';
+
 class KitchenPage extends StatefulWidget {
   static const String id = 'KitchenPage';
 
@@ -25,8 +27,8 @@ class _KitchenPage extends State<KitchenPage> {
   }
 
   void _loadSwitchState() async {
-    final DatabaseReference light1Ref = _databaseRef.child('Kitchen/Light1Status/isKLight1On');
-    final DatabaseReference light2Ref = _databaseRef.child('Kitchen/Light2Status/isKLight2On');
+    final DatabaseReference light1Ref = _databaseRef.child('Components/Kitchen/Light 1/isKLight1On');
+    final DatabaseReference light2Ref = _databaseRef.child('Components/Kitchen/Light 2/isKLight2On');
 
     light1Ref.onValue.listen((event) {
       setState(() {
@@ -49,11 +51,11 @@ class _KitchenPage extends State<KitchenPage> {
 
   Future<void> _updateTheRealtimeDatabase(String key, bool status) async {
     if (key == 'isKLight1On') {
-      await _databaseRef.child('Kitchen').child('Light1Status').set({
+      await _databaseRef.child('Components/Kitchen').child('Light 1').set({
         'isKLight1On': status,
       });
     } else if (key == 'isKLight2On') {
-      await _databaseRef.child('Kitchen').child('Light2Status').set({
+      await _databaseRef.child('Components/Kitchen').child('Light 2').set({
         'isKLight2On': status,
       });
     }
@@ -66,69 +68,83 @@ class _KitchenPage extends State<KitchenPage> {
         automaticallyImplyLeading: true,
         title: const Text('Kitchen'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-
-                  Stack(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: 300,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 1',
-                        isSwitchOn: isKLight1On,
+                      const SizedBox(
+                        height: 30,
                       ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isKLight1On,
-                          onChanged: (value) {
-                            setState(() {
-                              isKLight1On = value;
-                              _saveSwitchState('isKLight1On', isKLight1On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 1',
+                            isSwitchOn: isKLight1On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isKLight1On = !isKLight1On;
+                                  _saveSwitchState('isKLight1On', isKLight1On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isKLight1On),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Stack(
+                        children: [
+                          SwitchCards(
+                            switchImage: 'images/light_switch.png',
+                            switchName: 'Light 2',
+                            isSwitchOn: isKLight2On,
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 25,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isKLight2On = !isKLight2On;
+                                  _saveSwitchState('isKLight2On', isKLight2On);
+                                });
+                              },
+                              child: CustomSwitch(isSwitched: isKLight2On),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Stack(
-                    children: [
-                      SwitchCards(
-                        switchImage: 'images/light_switch.png',
-                        switchName: 'Light 2',
-                        isSwitchOn: isKLight2On,
-                      ),
-                      Positioned(
-                        bottom: 1,
-                        right: 20,
-                        child: Switch(
-                          value: isKLight2On,
-                          onChanged: (value) {
-                            setState(() {
-                              isKLight2On = value;
-                              _saveSwitchState('isKLight2On', isKLight2On);
-                            });
-                          },
-                          activeTrackColor: Colors.white70,
-                          activeColor: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-          const bottomBar(currentPageId: KitchenPage.id),
-        ],
+            const bottomBar(currentPageId: KitchenPage.id),
+          ],
+        ),
       ),
     );
   }
 }
+
+

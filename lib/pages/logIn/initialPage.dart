@@ -23,23 +23,29 @@ class InitialPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              const SizedBox(
+                height: 10.0,
+              ),
               const Center(
                 child: Image(
                   image: AssetImage('images/logo.png'),
                 ),
               ),
+              const SizedBox(
+                height: 10.0,
+              ),
               const Text(
                 "Welcome Back",
                 style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
               SizedBox(
-                width: 200.0,
+                width: 220.0,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 2,
@@ -66,7 +72,7 @@ class InitialPage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 200.0,
+                width: 220.0,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 2,
@@ -88,7 +94,7 @@ class InitialPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 80.0,
+                height: 40.0,
               )
             ],
           )),

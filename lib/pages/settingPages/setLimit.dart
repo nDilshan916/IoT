@@ -6,7 +6,6 @@ import 'package:iot/components/bottom_bar.dart';
 class SetLimit extends StatefulWidget {
   static const String id = "SetLimit";
 
-
   const SetLimit({super.key});
 
   @override
@@ -42,21 +41,21 @@ class _SetLimitState extends State<SetLimit> {
       final data = event.snapshot.value;
       if (data != null) {
         setState(() {
-          _currentLimit = (data as num).toDouble() / 1000;
+          _currentLimit = (data as num).toDouble();
           _controller.text = '$_currentLimit';
-          curWattLimit = _currentLimit * 1000;
+          curWattLimit = _currentLimit;
         });
       } else {
         setState(() {
           _controller.text = '$_currentLimit';
-          curWattLimit = _currentLimit * 1000;
+          curWattLimit = _currentLimit;
         });
       }
     }).catchError((error) {
       print("Failed to load limit: $error");
       setState(() {
         _controller.text = '$_currentLimit';
-        curWattLimit = _currentLimit * 1000;
+        curWattLimit = _currentLimit;
       });
     });
   }
@@ -65,7 +64,7 @@ class _SetLimitState extends State<SetLimit> {
     setState(() {
       _currentLimit++;
       _controller.text = '$_currentLimit';
-      curWattLimit = _currentLimit * 1000;
+      curWattLimit = _currentLimit;
     });
   }
 
@@ -73,13 +72,14 @@ class _SetLimitState extends State<SetLimit> {
     setState(() {
       _currentLimit--;
       _controller.text = '$_currentLimit';
-      curWattLimit = _currentLimit * 1000;
+      curWattLimit = _currentLimit;
     });
   }
 
   void _updateCounterFromText(String value) {
     setState(() {
-      curWattLimit = _currentLimit * 1000;
+      _currentLimit = double.tryParse(value) ?? _currentLimit;
+      curWattLimit = _currentLimit;
     });
   }
 
@@ -103,79 +103,99 @@ class _SetLimitState extends State<SetLimit> {
       appBar: AppBar(
         title: const Text('Set Limit'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(height: 70.0),
-          Center(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              elevation: 5.0,
-              child: SizedBox(
-                height: 400.0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        const Text(
-                          'Set Usage Limit:',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'), // Replace with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(height: 70.0),
+            Center(
+              child: Card(
+                margin: EdgeInsets.all(20.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                color: Colors.blueGrey[900],
+                elevation: 5.0,
+                child: SizedBox(
+                  height: 400.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          const Text(
+                            'Set Usage Limit:',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.red,
-                                size: 34.0,
-                              ),
-                              onPressed: _decrementCounter,
-                            ),
-                            SizedBox(
-                              width: 60,
-                              child: TextField(
-                                controller: _controller,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  labelText: 'UNIT',
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.red,
+                                  size: 34.0,
                                 ),
-                                textAlign: TextAlign.center,
-                                onSubmitted: _updateCounterFromText,
-                                onChanged: _updateCounterFromText,
-                                style: const TextStyle(fontSize: 20.0),
+                                onPressed: _decrementCounter,
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.arrow_drop_up,
-                                color: Colors.green,
-                                size: 34.0,
+                              SizedBox(
+                                width: 60,
+                                child: TextField(
+                                  controller: _controller,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    labelText: 'UNIT',
+                                    labelStyle: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  onSubmitted: _updateCounterFromText,
+                                  onChanged: _updateCounterFromText,
+                                  style: const TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
                               ),
-                              onPressed: _incrementCounter,
-                            ),
-                          ],
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_drop_up,
+                                  color: Colors.green,
+                                  size: 34.0,
+                                ),
+                                onPressed: _incrementCounter,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: _saveLimit,
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.red[900]),
+                          ),
+                          child: const Text('Save', style: TextStyle(color: Colors.white)),
                         ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: _saveLimit,
-                      child: const Text('Save'),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          const bottomBar(currentPageId: SetLimit.id)
-        ],
+            const bottomBar(currentPageId: SetLimit.id),
+          ],
+        ),
       ),
     );
   }

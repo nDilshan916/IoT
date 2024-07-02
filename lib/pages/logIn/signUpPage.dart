@@ -51,14 +51,14 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Text(
                 'Create Your\nAccount',
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 35,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 200.0),
+            padding: const EdgeInsets.only(top: 250.0),
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(

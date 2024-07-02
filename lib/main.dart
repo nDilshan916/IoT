@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:iot/pages/settingPages/set_To_Off.dart';
+import 'package:iot/pages/settingPages/techSup/chat.dart';
+import 'components/draggable_fab.dart';
 import 'firebase_options.dart';
 import 'notification_service.dart';
 import 'usage_monitor_service.dart';
@@ -36,6 +39,8 @@ Future<void> main() async {
   );
   await NotificationService().initialize();
   UsageMonitorService();
+
+  await dotenv.load(fileName: ".env");
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -82,8 +87,17 @@ class IoTApp extends StatelessWidget {
         SetLimit.id: (context) => const SetLimit(),
         ReminderPage.id: (context) => const ReminderPage(),
         TecSupport.id: (context) => const TecSupport(),
+        ChatScreen.id: (context) => ChatScreen(),
         SetToOff.id: (context) => const SetToOff(),
       },
     );
   }
+}
+Widget withDraggableFAB(Widget child) {
+  return Stack(
+    children: [
+      child,
+      DraggableFloatingActionButton(),
+    ],
+  );
 }

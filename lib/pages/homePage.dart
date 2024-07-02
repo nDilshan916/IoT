@@ -6,6 +6,8 @@ import 'package:iot/components/daily_usage_progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../main.dart';
+
 class HomePage extends StatefulWidget {
   static const String id = 'homePage';
 
@@ -164,7 +166,7 @@ class _HomePageState extends State<HomePage> {
         }
       });
 
-      double lastMonthUnits = lastMonthTotal / 1000.0;
+      double lastMonthUnits = lastMonthTotal;
 
       double lastMonthBillAmount = 0.0;
       if (lastMonthUnits > 93) {
@@ -202,16 +204,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
+    int units = (monthlyUsage).round();
     print('current usage limit: $usageLimit');
     print('dailyUsage: $dailyUsage');
-    return Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('IoT Dashboard'),
+        title: const Text('Dashboard'),
       ),
-      body: Container(
+      body: withDraggableFAB(Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/background.png'), // Replace with your image path
@@ -222,30 +226,44 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             // Daily Usage Progress Bar
-            Flexible(
-              flex: 1,
+            Expanded(
+              flex: 4,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8.0, bottom: 10.0),
                 child: DailyUsageProgress(
                   dailyUsage: dailyUsage,
                   initialUsageLimit: usageLimit,
                 ),
               ),
             ),
-            InfoCard(
-              img: Image.asset('images/kilowot_h_display.png', width: 50.0),
-              text1: '$monthlyUsage kWh',
-              text2: "Electricity usage this month",
-            ),
-            InfoCard(
-              img: Image.asset('images/money_display.png', width: 50.0),
-              text1: 'Rs.$lastMonthBill',
-              text2: "Total electricity bill last month",
+            Expanded(
+              flex: 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 350.0,
+                    child: InfoCard(
+                      img: Image.asset('images/kilowot_h_display.png', width: 50.0,),
+                      text1: '$units UNITS (kWh)',
+                      text2: "Electricity usage this month",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 350.0,
+                    child: InfoCard(
+                      img: Image.asset('images/money_display.png', width: 50.0),
+                      text1: 'Rs.$lastMonthBill',
+                      text2: "Total electricity bill last month",
+                    ),
+                  ),
+                ],
+              ),
             ),
             const bottomBar(currentPageId: HomePage.id),
           ],
         ),
-      ),
+      )),
     );
   }
 }
@@ -266,7 +284,7 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5.0,
-      color: Colors.red,
+      color: Colors.red[900],
       margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -17,7 +17,7 @@ class SwitchCards extends StatelessWidget {
     return Card(
       elevation: 9.0,
       margin: const EdgeInsets.fromLTRB(20.0, 2.0, 20.0, 2.0),
-      color: Colors.grey,
+      color: Colors.blueGrey[900],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
@@ -32,7 +32,7 @@ class SwitchCards extends StatelessWidget {
                   width: 100,
                   height: 125,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 1),
                 Text(
                   switchName,
                   style: const TextStyle(
@@ -41,7 +41,7 @@ class SwitchCards extends StatelessWidget {
                     color: Colors.white70,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 6),
               ],
             ),
           ),
@@ -53,7 +53,7 @@ class SwitchCards extends StatelessWidget {
               height: 17,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSwitchOn ? Colors.green[800] : Colors.red[800],
+                color: isSwitchOn ? Colors.yellow[800] : Colors.white,
               ),
             ),
           ),
