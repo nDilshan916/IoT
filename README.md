@@ -1,16 +1,3 @@
-# iot
+# Smart Home Energy Management System (SHEMS)
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+A Flutter-based application integrated with Firebase and Google Generative AI, SHEMS enables users to monitor and optimize energy consumption. Key features include real-time switch updates, daily and monthly usage tracking, energy limit notifications, and e-bill calculations. The app also incorporates an AI chatbot to answer user queries about energy usage, predictions, and recommendations.
