@@ -56,5 +56,14 @@ A mobile-based smart energy monitoring system built using Flutter and Firebase, 
 - 🟡 Usage comparison with similar households
 - 🟡 Dark mode & accessibility improvements
 
+<h3>📱 App Screenshots</h3>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/30eb79ae-bd16-46f2-b4e5-abb82576565f" alt="Chatbot" height="400"> &nbsp;&nbsp;&nbsp;
+  <img src="https://github.com/user-attachments/assets/75993bfb-49a0-4efc-a9c2-6607c202b31e" alt="Dashboard" height="400"> &nbsp;&nbsp;&nbsp;
+  <img src="https://github.com/user-attachments/assets/20aabedf-4872-42bb-bbf5-a393466bdbc0" alt="Analytics" height="400"> &nbsp;&nbsp;&nbsp;
+</p>
+
+
 📽️ [Click here to watch the demo video](https://drive.google.com/file/d/1BE0ADKUrrTQeiqrlWB5rjyse3mv5kATj/view?usp=drive_link)
 
